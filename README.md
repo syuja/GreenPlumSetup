@@ -1,26 +1,41 @@
-# What is Greenplum (GP)?  
+![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
+# Table of Contents
+  1. [What is Greenplum (GP)?] (#gp)  
+    a. [Basic Structure] (#struct)
+  2. [Installation] (#inst)  
+    a. [Helpful Tips] (#help)
+  3. 
+
+<a id="gp"></a>
+## What is Greenplum (GP)?
+
   It's massively parallel processing (MPP) database server built on open source PostgreSQL.
   - Essentially several PostgreSQL db instances acting together as one cohesive DBMS. 
     - Greenplum supplements PostgreSQL (PSQL) to support parallel structure of: 
-    parallel data loading using external tables, query optimizations, etc.
-  - Master: 
+    parallel data loading using external tables, query optimizations, etc.  
+
+<a id="struct"></a>
+### Basic Structure
+  - Master: entry point
   - Segments: 2 or more processors that carry out an operation, each with its own resources
- 
-# Table of Contents:  
-  1. Installation  
-    a. Helpful Tips
-  2. 
+  - Interconnect:  
+  - Pivotal Query Optimizer:  
+  
+![architecture] (https://github.com/syuja/GreenPlumSetup/blob/master/img/architecture.png)
+   
+ add image
 
   Master is entry point where users connect and submit SQL queries. It coordinates other db instances called segments which store
   and process data
     
     
 Ideal:distributed evenly so start and finish at the same time
+<a id="inst"></a>
 ## Installation
 Images of how to download
 untar then opening it
 initial look 
-
+<a id="help"> </a>
 ### Helpful Tips
 Helpful: Ownership of keyboard and mouse ==> special key right cmd
 Global setting ==> right control ^ <== 
