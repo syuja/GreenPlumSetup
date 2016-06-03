@@ -5,6 +5,7 @@
 ## spell check!!*****
 
 #### [Back to README.md](../README.md)
+#### [Go to ANALYTICS.md](./ANALYTICS.md)
 
 ### Table of Contents
   1. [VACUUM and ANALYZE](#vac)
@@ -100,17 +101,6 @@ compression and to reduce I/O when there is duplicated data on column.
 
 _Colum-oriented is append-only and partitioned._  
 
-**Check for even data distribution on segments.**
-The tables are distributed with a hash function on UniqueCarrier and FlightNum. These columns 
-were selected because they produces even distribution of data onto segments. Also, frequent joins
-are expected on these two columns. Try to distribute based on a unique column, since this 
-ensures an even distribution. Low cardinality columns will yield poor distribution.  
-
-One goal is to ensure approximately same amount of data in each segment.  
-    tutorial=# SELECT gp_segment_id, COUNT(*) FROM faa.otp_c GROUP BY
-    gp_segment_id ORDER BY gp_segment_id;
-    
-
 <a id="choose"></a>
 #### Choosing Row or Column Orientation<sup> 2 <sup>
 
@@ -120,14 +110,56 @@ more info available at : http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-st
 
 <a id="even"></a>
 #### Even Data Distribution  
+**Check for even data distribution on segments.**  
+
+The tables are distributed with a hash function on UniqueCarrier and FlightNum. These columns 
+were selected because they produces even distribution of data onto segments. Also, frequent joins
+are expected on these two columns. Try to distribute based on a unique column, since this 
+ensures an even distribution. Low cardinality columns will yield poor distribution.  
+
+One goal is to ensure approximately same amount of data in each segment.  
+    tutorial=# SELECT gp_segment_id, COUNT(*) FROM faa.otp_c GROUP BY
+    gp_segment_id ORDER BY gp_segment_id;
 
 
 <a id="part"></a>
 #### Partitioning  
+Partitioning tables can improve query performnace by allowing the query optimizer to scan only
+the needed data to satisfy the query. Paritioning is logical not physical, and the table is divided
+into smaller child files.  
+
+Why does it increase performance? When a query filters on same criteria used to define partitions, the 
+optimizer can avoid searching irrelevant partitions.  
+
+Two types:  
+  A. range partitioning: division based on range, such as date or price  
+  B. list partitioning: based on a list of values, such as territory or product line  
+  C. combination of both types  
+  
+  <p align = "center">
+![partition] (https://github.com/syuja/GreenPlumSetup/blob/master/img/partition.pngg)
+  </p>
+
+Partitioning occurs during CREATE TABLE PARTITION BY. When a new partition is added, run ANALYZE
+again. Can either run ANALYZE on root partition or simply the new partition.  
+
+    
+    tutorial=#\timing on
+    tutorial=# SELECT MAX(depdelay) FROM faa.otp_c WHERE UniqueCarrier='UA';
+    --not partitioned by unique carrier
+    Time: 641.574 ms
+    
+    tutorial=# SELECT MAX(depdelay) FROM faa.otp_c WHERE flightdate='2009-11-01';
+    Time: 30.658 ms
+      
+
+The query on the partitioned column(flightdate) takes much less time. First scan, scans all
+17 children, while the second one just scans one child file.  
+
+[more info:] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)  
 
 
-
-
+#### [ANALYTICS.md](./ANALYTICS.md)
 ---
 <sup id="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect(dirty reads, lost updates). More isolation results in
 less concurrency and less concurrency effects.</a></sup> 
