@@ -194,10 +194,15 @@ more info on [partitions] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-
 ###Summary:  
 ---  
 In order for Greenplum to run efficiently it is important to run VACUUM and ANALYZE periodically.  
+
 This will affect the query plan chosen by the optimizer. The user may want to consider changing the optimizer to use QPO, instead of the default optimizer.  
+
 Don't add indices unless you plan to query very specific rows of data.  
+
 When creating a table, consider using column-orientation according to our guidelines.  
+
 Ensure that the data is distributed evenly across segments. 
+
 Finally, partition the tables, particularly if plan use queries that filter results using WHERE. Create partitions corresponding to the filters that will be used.    
 
 #### [ANALYTICS.md](./ANALYTICS.md)
