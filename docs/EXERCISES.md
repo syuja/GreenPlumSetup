@@ -11,9 +11,9 @@
     a. [Changing Optimizers](#changing)
   3. [Indexes and Performance](#ind)
   4. [Rows vs. Column Orientation](#row)  
-     a. [Guidelines Row for Column Orientation] (#choose)
-  5. [Even Data Distribution](#even)
-  6. [Partitioning] (#part)
+     a. [Guidelines Row for Column Orientation] (#choose)  
+  5. [Even Data Distribution](#even)  
+  6. [Partitioning] (#part)  
   7.[Summary] (#summary)
 
 **Nota bene: the query optimizer is part of the query planner.**  
@@ -115,7 +115,7 @@ compression and to reduce I/O when there is duplicated data on column.
 _Colum-oriented is append-only and partitioned._  
 
 <a id="choose"></a>
-#### Guidelines Row or Column Orientation<sup> 2 <sup>
+#### Guidelines Row or Column Orientation<sup><a href="#fn2" id="ref2">2</a></sup>
 |Row-oriented Storage | Column-oriented Storage|
 |---------------------|------------------------|
 |OLTP                 |OLAP                   |
@@ -191,6 +191,8 @@ more info on [partitions] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-
 #### [ANALYTICS.md](./ANALYTICS.md)
 ---
 <sup id="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect (dirty reads, lost updates). More isolation results in
-less concurrency and less concurrency effects.</a></sup> 
+less concurrency and less concurrency effects.</a></sup>  
+<sup id="fn2"> <a href="#ref2" title="guidelines"> 2:</a></sup> <http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html>  
+
   
   
