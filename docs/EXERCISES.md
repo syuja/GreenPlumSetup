@@ -207,9 +207,9 @@ Finally, partition the tables, particularly if plan use queries that filter resu
 
 #### [ANALYTICS.md](./ANALYTICS.md)
 ---
-<sup id="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect (dirty reads, lost updates). More isolation results in
-less concurrency and less concurrency effects.</a></sup>  
-<sup id="fn2"> <a href="#ref2" title="guidelines"> 2:</a></sup> <http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html>  
+<sub><sup ="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect (dirty reads, lost updates). More isolation results in
+less concurrency and less concurrency effects.</sub></sup></a> 
+<sub><sup id="fn2"> <a href="#ref2" title="guidelines">2: </a> <http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html></sup></sub>  
 
   
   
