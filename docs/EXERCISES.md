@@ -12,16 +12,16 @@
   2. [Explain Plans](#expl)
   3. [Indexes and Performance](#ind)
   4. [Rows vs. Column Orientation](#row)  
-     a. [Choosing Row or Column Orientation] (#choose)
+     a. [Guidelines Row or Column Orientation] (#choose)
   5. [Even Data Distribution](#even)
   6. [Partitioning] (#part)
 
 <a id="vac"></a>
 #### VACUUM and ANALYZE
 Greenplum uses Multiversion Concurrency Control (MVCC) to guarantee isolation (one of ACID properties of RDBMS).
-Isolation<sup><a href="#fn1" id="ref1">1</a></sup> is a property that defines how/whn the changes made by one operation become visible to others.   
+Isolation<sup><a href="#fn1" id="ref1">1</a></sup> is a property that defines how/when the changes made by one operation become visible to others.   
 
-MVCC allows users to obtain consistent query results for a query, even if data is changing as the query is beinng executed.
+MVCC allows users to obtain consistent query results for a query, even if data is changing as the query is being executed.
   - query sees snapshot of the database at a single point in time
   
 `VACUUM:` removes older versions of rows that are no longer needed, **leaving free space that can be reused**.
@@ -102,10 +102,23 @@ compression and to reduce I/O when there is duplicated data on column.
 _Colum-oriented is append-only and partitioned._  
 
 <a id="choose"></a>
-#### Choosing Row or Column Orientation<sup> 2 <sup>
+#### Guidelines Row or Column Orientation<sup> 2 <sup>
+|Row-oriented Storage | Column-oriented Storage|
+|---------------------|------------------------|
+|OLTP                 |OLAP                   |
+|many columns of single row needed at once | aggregation of small number of columns or for single columns requires regular updates|  
 
+**Scenarios:**  
+Update tables of data frequently: row oriented   
+Frequent inserts: column oriented must write to different places on disk    
+Number of Columns requested: request all or majority then row-oriented  
+Number of columns in table: row-oriented best for many columns.  
 
-more info available at : http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html#topic39
+Use column-oriented when aggregate many values of a single column, when the row-size is
+small or accessing a small subset of the columns. Column has the same data type, so it can
+be compressed when stored in column-orientation.  
+
+more [info] (http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html#topic39)
 
 
 <a id="even"></a>
@@ -113,7 +126,7 @@ more info available at : http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-st
 **Check for even data distribution on segments.**  
 
 The tables are distributed with a hash function on UniqueCarrier and FlightNum. These columns 
-were selected because they produces even distribution of data onto segments. Also, frequent joins
+were selected because they produce even distribution of data onto segments. Also, frequent joins
 are expected on these two columns. Try to distribute based on a unique column, since this 
 ensures an even distribution. Low cardinality columns will yield poor distribution.  
 
@@ -124,8 +137,8 @@ One goal is to ensure approximately same amount of data in each segment.
 
 <a id="part"></a>
 #### Partitioning  
-Partitioning tables can improve query performnace by allowing the query optimizer to scan only
-the needed data to satisfy the query. Paritioning is logical not physical, and the table is divided
+Partitioning tables can improve query performance by allowing the query optimizer to scan only
+the needed data to satisfy the query. Partioning is logical not physical, and the table is divided
 into smaller child files.  
 
 Why does it increase performance? When a query filters on same criteria used to define partitions, the 
@@ -161,7 +174,7 @@ more info on [partitions] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-
 
 #### [ANALYTICS.md](./ANALYTICS.md)
 ---
-<sup id="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect(dirty reads, lost updates). More isolation results in
+<sup id="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect (dirty reads, lost updates). More isolation results in
 less concurrency and less concurrency effects.</a></sup> 
   
   
