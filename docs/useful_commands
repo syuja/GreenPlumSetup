@@ -11,5 +11,7 @@ PSQL:
 \timing [on | off] - toggles timing commands
 
 
+FROM TERMINAL:
+psql -l - list all available databases
 
 Please find here: http://gpdb.docs.pivotal.io/gs/43/pdf/PSQLQuickRef.pdf
