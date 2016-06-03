@@ -2,13 +2,16 @@
 
 ## Exercises  
 
+## spell check!!*****
+
 #### [Back to README.md](../README.md)
 
 ### Table of Contents
   1. [VACUUM and ANALYZE](#vac)
   2. [Explain Plans](#expl)
   3. [Indexes and Performance](#ind)
-  4. [Rows vs. Column Orientation](#row)
+  4. [Rows vs. Column Orientation](#row)  
+     a. [Choosing Row or Column Orientation] (#choose)
   5. [Even Data Distribution](#even)
   6. [Partitioning] (#part)
 
@@ -31,24 +34,88 @@ MVCC allows users to obtain consistent query results for a query, even if data i
 One of the optimizer's goals is to minimize the volume of data that must be analyzed and potentially moved
 *good idea to run ANALYZE periodically or after major changes in the contents. Accurate statistics will help the planner to
 choose the most appropriate query plan, and thereby improve the speed of query processing.  
-    
-      psql -U gpadmin tutorial
-      -- for every table, or can run ANALYZE on individual tables
-      tutorial=# ANALYZE faa.d_airports;
-      ANALYZE
-      tutorial=# ANALYZE faa.d_airlines;
-      ANALYZE
-      ...
+
+```
+psql -U gpadmin tutorial  
+-- for every table, or can run ANALYZE on individual tables  
+tutorial=# ANALYZE faa.d_airports;  
+ANALYZE  
+tutorial=# ANALYZE faa.d_airlines;  
+ANALYZE
+```
+  
+Summary: Vacuum removes old rows to free up space. Analyze generates statistics that are used by the query optimizer. Run both
+after major changes have been made to the table.
   
 <a id="expl"></a>
 #### Explain Plans  
 
 <a id="ind"></a>
 #### Indexes and Performance 
+Segments execute table scans in parallel, each segment **scanning a small segment** of the table, 
+the traditional performance advantage from indexes is diminished.  
+Indexes consume large amounts of space and require considerable CPU time to compute during loads.  
+
+_Exception:_ Indexes are useful for highly selective queries. For example, query looks up a single
+row, an index can dramatically improve performance. (197 ms vs 29 ms).  
+    
+    tutorial=# SELECT * from sample WHERE big = 12345;
+    Time: 197.640 ms
+    tutorial=# EXPLAIN SELECT * from sample WHERE big = 12345;
+    QUERY PLAN
+    ...  
+   Time: 19.719 ms  
+    
+
+Create index and run it again:  
+    
+    tutorial=# CREATE INDEX sample_big_index ON sample(big);
+    CREATE INDEX
+    Time: 1106.47 ms  
+    
+    tutorial=# EXPLAIN SELECT * FROM sample WHERE big = 12345;
+    QUERY PLAN
+    ...
+    Time: 23.674
+    
+    --actual run
+    tutorial=# SELECT * FROM sample WHERE big=12345;
+    Time: 29.421 ms  
+    
+
+_Notice the difference in timing: 197 ms vs 29 ms. The difference is more pronounce for larger
+tables._
 
 
 <a id="row"></a>
 #### Rows vs. Column Orientation  
+Both storage options have advantages, depending upon data compression characteristics, 
+the kinds of queries, row length, and complexity and number of joins.  
+Generally, very wide tables are better in row orientation. Column orientation saves space with
+compression and to reduce I/O when there is duplicated data on column.  
+    please see previous tutorial for orientation creation  
+    to check size:
+    tutorial=# SELECT pg_size_pretty(pg_relation_size('faa.otp_r'));
+    tutorial=# SELECT pg_size_pretty(pg_relation_size('faa.otp_c'));
+
+_Colum-oriented is append-only and partitioned._  
+
+**Check for even data distribution on segments.**
+The tables are distributed with a hash function on UniqueCarrier and FlightNum. These columns 
+were selected because they produces even distribution of data onto segments. Also, frequent joins
+are expected on these two columns. Try to distribute based on a unique column, since this 
+ensures an even distribution. Low cardinality columns will yield poor distribution.  
+
+One goal is to ensure approximately same amount of data in each segment.  
+    tutorial=# SELECT gp_segment_id, COUNT(*) FROM faa.otp_c GROUP BY
+    gp_segment_id ORDER BY gp_segment_id;
+    
+
+<a id="choose"></a>
+#### Choosing Row or Column Orientation<sup> 2 <sup>
+
+
+more info available at : http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html#topic39
 
 
 <a id="even"></a>
