@@ -7,7 +7,7 @@
 
 ### Table of Contents
   1. [VACUUM and ANALYZE](#vac)
-  2. [Explain Plans](#expl)
+  2. [Explain Plans](#expl)  
     a. [Changing Optimizers](#changing)
   3. [Indexes and Performance](#ind)
   4. [Rows vs. Column Orientation](#row)  
