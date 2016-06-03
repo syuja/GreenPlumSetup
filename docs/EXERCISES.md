@@ -2,29 +2,27 @@
 
 ## Exercises  
 
-## spell check!!*****
-
-#### [Back to README.md](../README.md)
-#### [Go to ANALYTICS.md](./ANALYTICS.md)
+[Back to README.md](../README.md)  
+[Go to ANALYTICS.md](./ANALYTICS.md)
 
 ### Table of Contents
   1. [VACUUM and ANALYZE](#vac)
   2. [Explain Plans](#expl)
   3. [Indexes and Performance](#ind)
   4. [Rows vs. Column Orientation](#row)  
-     a. [Guidelines Row or Column Orientation] (#choose)
+     a. [Guidelines Row for Column Orientation] (#choose)
   5. [Even Data Distribution](#even)
   6. [Partitioning] (#part)
 
 <a id="vac"></a>
 #### VACUUM and ANALYZE
-Greenplum uses Multiversion Concurrency Control (MVCC) to guarantee isolation (one of ACID properties of RDBMS).
+Greenplum uses Multiversion Concurrency Control (MVCC) to guarantee isolation (one of A.C.I.D properties of RDBMS).
 Isolation<sup><a href="#fn1" id="ref1">1</a></sup> is a property that defines how/when the changes made by one operation become visible to others.   
 
 MVCC allows users to obtain consistent query results for a query, even if data is changing as the query is being executed.
   - query sees snapshot of the database at a single point in time
   
-`VACUUM:` removes older versions of rows that are no longer needed, **leaving free space that can be reused**.
+`VACUUM:` removes rows that are no longer needed, **leaving free space that can be reused**.
   - row is updated or deleted, and no active transactions
   - loading data while tables are in use may produce older versions of rows
 
