@@ -16,23 +16,22 @@
 
 <a id="vac"></a>
 #### VACUUM and ANALYZE
-Greenplum uses Multiversion Concurrency Control (MVCC) to guarantee isolation (one of A.C.I.D properties of RDBMS).
-Isolation<sup><a href="#fn1" id="ref1">1</a></sup> is a property that defines how/when the changes made by one operation become visible to others.   
+Greenplum uses Multiversion Concurrency Control (MVCC) to guarantee isolation.
+Isolationis a property of RDBMS that defines how/when the changes made by one operation become visible to others.<sup><a href="#fn1" id="ref1">1</a></sup>    
 
-MVCC allows users to obtain consistent query results for a query, even if data is changing as the query is being executed.
+MVCC returns consistent query results for a query, even if data is changing as the query executes.
   - query sees snapshot of the database at a single point in time
   
 `VACUUM:` removes rows that are no longer needed, **leaving free space that can be reused**.
-  - row is updated or deleted, and no active transactions
-  - loading data while tables are in use may produce older versions of rows
+  - row is updated or deleted, and no active transactions to it
+  - produced by loading data while tables are in use
 
-`ANALYZE:` command generates statistics about the distribution of data in a table 
-  - stores histograms about the values in each of the columns
-  - query optimizer depends on these to select best query plan
+`ANALYZE:` generates statistics about the distribution of data in a table 
+  - histograms about the values in each column
+  - query optimizer uses for query plan selection
   
-One of the optimizer's goals is to minimize the volume of data that must be analyzed and potentially moved
-*good idea to run ANALYZE periodically or after major changes in the contents. Accurate statistics will help the planner to
-choose the most appropriate query plan, and thereby improve the speed of query processing.  
+One of the optimizer's goals is to minimize the volume of data that must be analyzed and potentially moved.  
+**Run ANALYZE periodically or after major changes in the contents.** Accurate statistics are important for the query planner.
 
 ```
 psql -U gpadmin tutorial  
