@@ -4,13 +4,13 @@
     a. [Basic Structure] (#struct)
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)
-  3. [Tutorial] (#tut)
-    a. [Setup create username] (#username) ==> don't want to stay in sudo
-    b. [Create and Prepare Database] (#createdb)
-    c. [Create Tables] (#createtb)
-    d. [Data Loading] (#load)
-    e. [Queries and Performance Tuning] (#tuning)
-  4. [Exercises] (#exerc)
+  3. [Tutorial] (#tut)  
+    a. [Setup create username] (#username) ==> don't want to stay in sudo  
+    b. [Create and Prepare Database] (#createdb)  
+    c. [Create Tables] (#createtb)  
+    d. [Data Loading] (#load)  
+    e. [Queries and Performance Tuning] (#tuning)  
+  4. [Exercises] (doc/kb_sdk_dependencies.md)
   5. [Backup and Recovery] (#backup)
   6. [Intro to Greenplum In-Db analytics] (#analytics)
 
@@ -41,6 +41,7 @@ Ideal: distributed data evenly so that segments start and finish at the same tim
 Images of how to download
 untar then opening it
 initial look 
+
 <a id="help"> </a>
 ### Helpful Tips
 Helpful: Ownership of keyboard and mouse ==> special key right cmd
@@ -54,20 +55,12 @@ sudo yum install git-all
 to see version type :
 cat /proc/version
 
-
-##############################
-Steps Provided: *like Toc provide links!
-1. Setup create username ==> don't want to stay in sudo
-2. Create and Prepare Database
-3. Create Tables
-4. Data Loading
-5. Queries and Performance Tuning
-6. intro to Greenplum In-Db analytics
-7. backup and recovery
-
+<a id="tut"></a>
+### Tutorial
 1. **run start script!!!** ./start_all.sh <== otherwise will not be able to follow the steps
 WHAT IS TEMPLATE 1? <== psql??
 
+<a id="username"></a>
 CREATE USER -P: 
 create user creates a new PostgreSQL user/role (wrapper around CREATE ROLE)
 -P flag will issue a prompt for the password of the new user
@@ -91,11 +84,13 @@ GRANT users TO user1, user2 : defines access privileges; conveys the privileges 
 dropuser <user_name>; : drops user... inside the user is in semicolon is important!!
 DROP ROLE <user or group>; :drops user...  
 
+<a id="createdb"></a>
 2. Create a database and prepare it
 createdb: wrapper for CREATE DATABASE command
 dropdb: wrapper for DROP DATABASE
 psql -l list all databases
 psql -U user1 tutorial: connects as user1 to tutorial db
+
 
 B) GRANT PRIVILEGES TO USERS:
 grant users the minimum permissions required to do their work...
@@ -118,6 +113,8 @@ ALTER ROLE user1 SET search_path TO faa, public, pg_catalog, gp_toolkit;**import
 
 
 
+
+<a id="createtb"></a>
 3. Create Tables==> Important: definition of table includes distribution policy of the data, and distribution policy will affect performance
 Goals: - distribute volume of data and query execution work evenly among segments AND
       - enable segments to accomplish the most expensive query process steps locally...
@@ -138,6 +135,8 @@ tutorial# \dt ==> shows all tables created (make sure **search_path** is set) re
 
 
 
+
+<a id="load"></a>
 4. Data Loading
 - INSERT is slowest, but simplest
 - COPY can specify the format of external text file to parse BUT not parallel
@@ -317,8 +316,11 @@ ELT allows load processes to make use of massive parallelissm ... set-based oper
 COPY loads using single process
 external tables provide a means of leveraging the parallel processing power of segments <== also allows us to access multiple
 data sources with one SELECT of an external table
-  
 
+
+
+
+<a id ="tuning"></a>
 5. Queries and Performance Tuning:
 useful for writing and tuning queries
 
