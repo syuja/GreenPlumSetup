@@ -137,7 +137,7 @@ Two types:
   C. combination of both types  
   
   <p align = "center">
-![partition] (https://github.com/syuja/GreenPlumSetup/blob/master/img/partition.pngg)
+![partition] (https://github.com/syuja/GreenPlumSetup/blob/master/img/partition.png)
   </p>
 
 Partitioning occurs during CREATE TABLE PARTITION BY. When a new partition is added, run ANALYZE
@@ -156,7 +156,7 @@ again. Can either run ANALYZE on root partition or simply the new partition.
 The query on the partitioned column(flightdate) takes much less time. First scan, scans all
 17 children, while the second one just scans one child file.  
 
-[more info:] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)  
+more info on [partitions] (http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)  
 
 
 #### [ANALYTICS.md](./ANALYTICS.md)
