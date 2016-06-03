@@ -1,0 +1,15 @@
+
+PSQL: 
+\du - displays users that have access to current database (list roles)
+\dt - list tables
+\dv - list views
+\cd - change working directory
+\h - help on syntax for command \h SELECT or \h *
+\c - connect to a new database
+\q - quit database
+\l - lists all databases
+\timing [on | off] - toggles timing commands
+
+
+
+Please find here: http://gpdb.docs.pivotal.io/gs/43/pdf/PSQLQuickRef.pdf
