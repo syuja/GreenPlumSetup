@@ -6,11 +6,6 @@
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)
   3. [Tutorial] (#tut)  
-    a. [Setup create username] (#username)  
-    b. [Create and Prepare Database] (#createdb)  
-    c. [Create Tables] (#createtb)  
-    d. [Data Loading] (#load)  
-    e. [Queries and Performance Tuning] (#tuning)  
   4. [Exercises] (docs/EXERCISES.md)
 
 
@@ -66,19 +61,8 @@ Data is:| Snapshot of ongoing state | Multi-dimensional view |
 <a id="help"> </a>  
   - [Helpful Tips] (docs/INSTALLATION.md)  
 
-  
 <a id="tut"></a>
-## [Tutorial] (TUTORIAL.md)
-  <a id="username"></a>
-  a. CREATE USER -P: 
-  <a id="createdb"></a>
-  b. Create a database and prepare it  
-  <a id="createtb"></a>
-  c. Create Table  
-  <a id="load"></a>
-  d. Data Loading  
-  <a id ="tuning"></a>
-  e. Queries and Performance Tuning:  
+## [Tutorial] (TUTORIAL.md)  
 
 See [Exercises](../docs/EXERCISES.md) to complete some exercises.  
 [Top](#top)  
