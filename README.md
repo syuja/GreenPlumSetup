@@ -89,9 +89,8 @@ Add gpfdist to the $PATH of the hosts.
 start gpfdist.  
 specify directory containing the data and the port to serve the data on.  
 
-<p align="center"> 
     gpfdist -d ~/home/directory/ -p 8081 > /tmp/stdout/goes/here 2>&1 &  
-</p>
+
 
 _**Greenplum Database machine**_:  
 First, create local load table to copy external data into.  
@@ -108,9 +107,9 @@ Then, create external table indicating the protocol as gpfdist and the port numb
 
 Now, when you use SELECT from external tables, gpfdist will serve files evenly to all segments. 
 
-<p align = "center">
-![gpfdist] (https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)
-</p>
+
+  <p align="center"> ![gpfdist] (https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)</p>
+
   
 
 **Note**: gpfload is a wrapper for gpfdist. Specify a task in a YAML control file, and gpload runs gpfdist using the configuration
