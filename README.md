@@ -5,8 +5,12 @@
     b. [OLTP vs .OLAP] (#oltp)  
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)
-  3. [Tutorial] (#tut)  
-  4. [Exercises] (docs/EXERCISES.md)
+  3. [**Data Distribution**] (#data)  
+    a. [Orientation] (#ori)  
+    b. [Partitioning] (#part)  
+    c. [Loading with gpfidst] (#gpf)  
+  4. [Tutorial] (#tut)  
+  5. [Exercises] (docs/EXERCISES.md)
 
 
 
@@ -32,7 +36,7 @@
   </p>  
 `Dispatching Parallel Query Plan`
 <p align = "center">
-![architecture] (https://github.com/syuja/GreenPlumSetup/blob/master/img/parallel_plan.png)
+![dispatching] (https://github.com/syuja/GreenPlumSetup/blob/master/img/parallel_plan.png)
   </p>
 
 
@@ -60,6 +64,57 @@ Data is:| Snapshot of ongoing state | Multi-dimensional view |
 ## [Installation] (docs/INSTALLATION.md) 
 <a id="help"> </a>  
   - [Helpful Tips] (docs/INSTALLATION.md)  
+  
+<a id="data"></a>
+## Data Distribution  
+In order to exploit the maximum parallelism possible, it is important to know a few basic details about how data is stored in
+Greenplum. Minor modifications to several parameters can result in great speedups.  
+
+<a id="ori"></a>
+### Orientation  
+
+<a id="part"></a>
+### Partitioning 
+
+<a id="gpf"></a>
+### gpfidst 
+Simply using INSERT or COPY will **not** read or write data in **parallel**. 
+
+Reading into Greenplum Database:  
+  
+  
+_**Host (serves data to be read into Greenplum)**_:  
+Copy the gpfdist utility to hosts that contain the external tables (the data that you want to read).  
+Add gpfdist to the $PATH of the hosts.   
+start gpfdist.  
+specify directory containing the data and the port to serve the data on.  
+
+<p align="center"> 
+    gpfdist -d ~/home/directory/ -p 8081 > /tmp/stdout/goes/here 2>&1 &  
+</p>
+
+_**Greenplum Database machine**_:  
+First, create local load table to copy external data into.  
+Then, create external table indicating the protocol as gpfdist and the port number the host uses to serve.   
+
+    CREATE EXTERNAL TABLE faa.ext_load_otp  
+    (LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  
+    LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    
+    FORMAT 'csv' (header)  
+    LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  
+    --cease operation if greater than 50,000 errors`
+    
+
+
+Now, when you use SELECT from external tables, gpfdist will serve files evenly to all segments. 
+
+<p align = "center">
+![gpfdist] (https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)
+</p>
+  
+
+**Note**: gpfload is a wrapper for gpfdist. Specify a task in a YAML control file, and gpload runs gpfdist using the configuration
+set in the control file.  
 
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)  
