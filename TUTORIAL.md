@@ -1,125 +1,153 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
 # Tutorial  
 # Table of Contents  
-  a. [Setup create username] (#username)  
+  a. [Setup Create Username] (#username)  
   b. [Create and Prepare Database] (#createdb)  
   c. [Create Tables] (#createtb)  
   d. [Data Loading] (#load)  
     e. [Queries and Performance Tuning] (#tuning)  
 
+**Before starting**: run the start script, otherwise you will not be able to connect to the database.
+    `[gpadmin@gpdb-sandbox]$ ./start_all.sh`  
+
+**Note**: there are two types of commands psql and bash commands; psql commands will begin with `#`  
+
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)
-1. **run start script!!!** ./start_all.sh <== otherwise will not be able to follow the steps
-WHAT IS TEMPLATE 1? <== psql??
+
+what is a template??
 
 <a id="username"></a>
-CREATE USER -P: 
-create user creates a new PostgreSQL user/role (wrapper around CREATE ROLE)
--P flag will issue a prompt for the password of the new user
+### 1. Create Username  
+`CREATE USER -P:`  
+  - creates a new PostgreSQL (psql) user/role (wrapper for CREATE ROLE)  
+  - P flag issues prompt for password  
 
-psql: command-line client to connect to PostgreSQL server. PostgreSQL interactive terminal. Can be used to type queries interactively.
+`dropuser <user_name>;`: drops user; semicolon is important ???wrapper?
+`DROP ROLE <user or group>;` :drops user...  
 
-\du:
-get a list of roles. 
+`psql`:  
+  - command-line client to connect to PostgreSQL server.  
+  - PostgreSQL interactive terminal (can type queries interactively)  
 
-\q: quit PostgreSQL command prompt
+`\du`:  
+  - get a list of roles.  
 
-psql -l: list all available databases (postgres: holds system wide info, template0 pristine template holds core postgres stuff,
-template1 default template for new db can be changed)
+`\q`:  
+  - quit psql shell
 
-CREATE USER user2 WITH PASSWORD 'pivotal' NOSUPERUSER: alias for create role 
-CREATE ROLE users: role is an entity that can own database objects and have database privilege (can be "user" or  a "group")
-GRANT users TO user1, user2 : defines access privileges; conveys the privileges granted to a role to each of its members
+`psql -l`:  
+  - list all available databases  
+    - postgres: holds system wide info  
+    - template0: pristine template holds core postgres stuff  
+    - template1 default template for new db can be changed  
+  
 
-\q exits ==> exits the psql shell...
+    `CREATE USER user2 WITH PASSWORD 'pivotal' NOSUPERUSER: alias for create role `  
+    `CREATE ROLE users -- role is an entity that can own database objects and have database privilege (can be "user" or  a "group")`  
+    `GRANT users TO user1, user2 --  defines access privileges; conveys the privileges granted to a role to each of its members`  
+    `\q --quits psql`  
+    
 
-dropuser <user_name>; : drops user... inside the user is in semicolon is important!!
-DROP ROLE <user or group>; :drops user...  
+
 
 <a id="createdb"></a>
-2. Create a database and prepare it
-createdb: wrapper for CREATE DATABASE command
-dropdb: wrapper for DROP DATABASE
-psql -l list all databases
-psql -U user1 tutorial: connects as user1 to tutorial db
+### 2. Create a Database and Prepare it  
+`createdb`: wrapper for CREATE DATABASE command  
+`dropdb`: wrapper for DROP DATABASE  
+`psql -U user1 tutorial`: connects as user1 to tutorial db  
+
+????prepare it, so I need to add script stuff!!!
 
 
-B) GRANT PRIVILEGES TO USERS:
-grant users the minimum permissions required to do their work...
-- connect as admin
-- grant privileges
-
-C) SCHEMA: container for a set of database objects (tables, data types, functions).
-namespace; suppose 1 db used for many applications, so may need multiple schemas.
-access objects by prefixing with schema... <schema>.table_person... employee.person or customer.person
-
-DROP SCHEMA IF EXISTS faa CASCADE; : cascade automatically drops objects (table, functions) that are contained in the schema...
-
-db contains schema search path.. starts with user, public..
-SET SEARCH_PATH TO faa, public, pg_catalog, gp_toolkit; <== not permanent if log out will have to back in
-#not persistent ==> associate search path with user role, so that each time connect the search path is restored
-
-ALTER ROLE user1 SET search_path TO faa, public, pg_catalog, gp_toolkit;**important every time I log out and into database**
+### `GRANT PRIVILEGES TO USERS`:  
+Grant users the minimum permissions required to do their work.  
+- connect as admin  
+- grant privileges  
 
 
+### `SCHEMA`  
+  - container for a set of database objects (tables, data types, functions).
+  - namespace; Multiple schemas allow using one database for many applications. 
+  - access objects by prefixing with schema.  
+    - <schema>.table_person, employee.person or customer.person  
 
+### `DROP SCHEMA IF EXISTS faa CASCADE`   
+  - cascade automatically drops objects (table, functions) that are contained in the schema.  
 
+Each user has a search path; it determines which schemas are searched when referencing object (tables, views, etc).  
 
+`SET SEARCH_PATH TO faa, public, pg_catalog, gp_toolkit;`  
+  - changes search_path temporarily  
+
+What if we want to change the search_path for a user more permanently?  
+
+`ALTER ROLE user1 SET search_path TO faa, public, pg_catalog, gp_toolkit;` :  
+ - will be restored everytime the user logs into the database
 
 <a id="createtb"></a>
-3. Create Tables==> Important: definition of table includes distribution policy of the data, and distribution policy will affect performance
-Goals: - distribute volume of data and query execution work evenly among segments AND
-      - enable segments to accomplish the most expensive query process steps locally...
-- for joins, use DISTRIBUTED BY (column,...) faster to join columns on different segments than it is to join rows on different segments
+### 3. Create Tables:  
+
+The definition of a table includes the distribution policy of the data, and the distribution policy will affect performance.   
+
+**Our goals**:  
+  - distribute data and query work evenly    
+    - enable segments to accomplish most expensive query process steps locally  
+  - distribute by  
+- for joins, use DISTRIBUTED BY (column,...) faster to join columns on different segments than it is to join rows on different segments  ???????  
 
 
 
-\h ==> shows available postgresql commands
-\dt *; for all schemas
-\dt or \d show only visible tables in search_path (may need to add things to search path)
-\? <== to see all available commands...
+`\h` or `\?` : help;shows available postgresql commands  
+`\dt *;` :  shows all schemas  
+`\dt` or `\d`:  show only visible tables **in search_path** (add schemas to search path if necessary) 
 
-running a script that creates tables
-sign in to db
-psql -U user1 tutorial
-tutorial=# \i create_dim_tables.sql
-tutorial# \dt ==> shows all tables created (make sure **search_path** is set) reference to setting search path
-
-
+**running a script that creates tables** : 
+    psql -U user1 tutorial -- sign in to db <tutorial>
+    tutorial=# \i create_dim_tables.sql -- creates tables 
+    tutorial# \dt -- shows all tables create  
+      
 
 
 <a id="load"></a>
-4. Data Loading
-- INSERT is slowest, but simplest
-- COPY can specify the format of external text file to parse BUT not parallel
-- Greenplum utilities: gpfdist and gpload using external data tables at
-HIGH DATA TRANSFER RATES, parallel data loading... 
--gpload runs a load task that you specify in a YAML-formatted control file... allows you to describe a complex task and execute it in
-a controlled, repeatable fashion..
+### 4. Data Loading: 3 Ways  
+  A.  INSERT is slowest, but simplest   
+  B.  COPY: specify the format of external text file **but** not parallel  
+  C.  Greenplum utilities: gpfdist and gpload using **external data tables** at **_HIGH DATA TRANSFER RATES_** (parallel)  
+  
 
-\i <== run sql scripts to COPY from csv-formatted text files
-\d d_cancellation_codes <== will show description of the table
+gpload is a wrapper for gpfdist. It call gpfdist using the setting specified in a YAML-formatted control file. Control file allows you to configure gpfdist in na controlled, repeatable fashion.   
 
-###SLOWEST BUT SIMPLEST
-INSERT INTO faa.d_cancellation_codes
-VALUES('A','Carrier'),('B','Weather'),('C','NAS')...
 
-SELECT * FROM faa.d_cancellation_codes <== to see inside table
+`\i` : run sql scripts  
+`\d d_cancellation_codes`: show description of table  
 
-###COPY STATEMENT:
-\COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS;
-==> \COPY <table_name> FROM 'file_name' CSV(comma-separated mode) HEADER(file contains a header line with the names of each column)
-LOG ERRORS INTO(optional clause precedes reject, specifies error table where rows with formatting errors will be logged when 
-running in single row error isolation mode; if dne will be generated) <error_table> KEEP(error table not dropped even if no errors)
-REJECT LIMIT 50 ROWS (allows you to isolate format errors in external table data and to continue loading correctly formatted rows.
-if limit exceeded then entire external table operation is aborted);
+### A. Slowest But Simplest
+    `INSERT INTO faa.d_cancellation_codes`  
+    `VALUES('A','Carrier'),('B','Weather'),('C','NAS')... `  
+ **see inside table**:  
+    `SELECT * FROM faa.d_cancellation_codes;`  
+    
 
-setting REJECT LIMIT 50 ROWS allows greenplum to scan external data in single row error isolation mode--> applist to external data rows
+### B. Copy Statement
+    `\COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS`  
+    `INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS;` 
+    `-- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode`  
+    
 
-http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html
+Syntax:
+    `\COPY <table_name> FROM 'file_name' CSV --comma-separated mode` 
+    `HEADER -- file contains a header row with colnames`  
+    `LOG ERRORS INTO --optionally precedes reject, specifies error table where rows with formatting errors will be logged`  
+    `<error_table> KEEP -- do not drop error_table`  
+    `REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows`  
+   `--if limit exceeded then entire external table operation is aborted`  
+     
 
-### Load Data with Greenplum utilities:
-#### gpdist: guarantees maximum parallelism while reading from or writing to external tables
+(http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
+
+### C. Load Data with Greenplum utilities:  
+#### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables
 1. gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & <== starts gpfdist process
   -d sets "home" directory to read and write files
   -p switch to set the port 
