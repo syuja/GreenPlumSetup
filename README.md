@@ -26,7 +26,7 @@
 
 <a id="struct"></a>
 ### Basic Structure
-  - **Master node**: entry point where users connect and submit SQL queries. Creates query plan and distributes work to segments. Coordinate segments which store and process data. 
+  - **Master node**: entry point where users connect and submit SQL queries. Creates query plan and distributes work to segments. Coordinates segments which store and process data. 
   - **Segments**: 2 or more processors that carry out an operation, each with its own resources. PSQL instances containing distinct data.  
   - **Interconnect**: networking layer and infrastructure for inter-process communication. (uses UDP and Greenplum version of TCP) 
   - **Pivotal Query Optimizer**: produces a query plan, and is contained within the master. Master dispatches the query plan to segments.  
@@ -117,7 +117,7 @@ run faster if the **query optimizer can eliminate partitions based on query pred
 ---
 Simply using INSERT or COPY will **not** read or write data in **parallel**. 
 
-Steps for reading in parallel.
+Steps for reading in parallel:
   
   
 _**Host (serves data to be read into Greenplum)**_:  
@@ -134,8 +134,8 @@ _**Greenplum Database machine**_:
   
 
     `CREATE EXTERNAL TABLE faa.ext_load_otp  `  
-    `(LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  `  
-    `LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    `  
+    `(LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  (LOAD table)`  
+    `LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important: gpfdist is the protocol `  
     `FORMAT 'csv' (header)  `  
     `LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  `  
     `--cease operation if greater than 50,000 errors `  
