@@ -34,7 +34,12 @@
   - **Query Plan**: is the set of operations Greenplum Database will perform to produce the result-set.  
 <p align = "center">
 ![architecture] (https://github.com/syuja/GreenPlumSetup/blob/master/img/architecture.png)
+  </p>  
+`Dispatching Parallel Query Plan`
+<p align = "center">
+![architecture] (https://github.com/syuja/GreenPlumSetup/blob/master/img/parallel_plan.png)
   </p>
+
 
 <sub><sup> Ideally, data is distributed evenly, so that the segments start and finish at the same time.</sup></sub>
 
