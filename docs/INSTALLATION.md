@@ -36,7 +36,9 @@ Now you're ready to start the tutorial. We will mostly use the `~/gpadmin/gpdb-s
 
 
 <a id="help"> </a>
-### Helpful Tips
+### Helpful Tips  
+It is helpful to set up a shortcut keyboard so that the host Operating System can maintain ownership of the keyboard and mouse.  
+<p align="center"> ![run_error](https://github.com/syuja/GreenPlumSetup/blob/master/img/install_run_error.png)</p> 
 Helpful: Ownership of keyboard and mouse ==> special key right cmd
 Global setting ==> right control ^ <== 
 helpful left control and arrows to move from full screen and out!!
