@@ -6,7 +6,7 @@
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)
   3. [Tutorial] (#tut)  
-    a. [Setup create username] (#username) ==> don't want to stay in sudo  
+    a. [Setup create username] (#username)  
     b. [Create and Prepare Database] (#createdb)  
     c. [Create Tables] (#createtb)  
     d. [Data Loading] (#load)  
@@ -17,7 +17,7 @@
 
 <a id="gp"></a>
 ## What is Greenplum (GP)?
-  Greenplum Database is a massively parallel processing (MPP) database built on PostgreSQL (PSQL).  
+  Greenplum Database is a massively parallel processing (MPP) share-nothing database built on PostgreSQL (PSQL).  
   - Consists of master node and segment nodes  
     - master node contains catalog information
     - all of the data is stored in the segment nodes  
@@ -27,16 +27,16 @@
 
 <a id="struct"></a>
 ### Basic Structure
-  - Master: entry point here users connect and submit SQL queries. It coordinates other db instances called segments which store
-  and process data
-  - Segments: 2 or more processors that carry out an operation, each with its own resources
-  - Interconnect: networking layer and infrastructure for inter-process communication. (uses UDP and Greenplum version of TCP) 
-  - Pivotal Query Optimizer: distributes queries to segments  
+  - **Master node**: entry point where users connect and submit SQL queries. Creates query plan and distributes work to segments. Coordinate segments which store and process data. 
+  - **Segments**: 2 or more processors that carry out an operation, each with its own resources. PSQL instances containing distinct data.  
+  - **Interconnect**: networking layer and infrastructure for inter-process communication. (uses UDP and Greenplum version of TCP) 
+  - **Pivotal Query Optimizer**: produces a query plan, and is contained within the master. Master dispatches the query plan to segments.  
+  - **Query Plan**: is the set of operations Greenplum Database will perform to produce the result-set.  
 <p align = "center">
 ![architecture] (https://github.com/syuja/GreenPlumSetup/blob/master/img/architecture.png)
   </p>
 
-Ideal: distributed data evenly so that segments start and finish at the same time
+<sub><sup> Ideally, data is distributed evenly, so that the segments start and finish at the same time.</sup></sub>
 
 <a id="inst"></a>
 ## Installation
