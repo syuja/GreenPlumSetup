@@ -72,11 +72,45 @@ Greenplum. Minor modifications to several parameters can result in great speedup
 
 <a id="ori"></a>
 ### Orientation 
----
+---  
+Greenplum allows storing tables as separate columns in different segments (instead of a subset of rows of a table in each segment).  
+Column-oriented storage is good when users query few columns, for compressing data (easier to compress same data type), and regular updates that modify single columns.  
+
+For more information see [Tutorial](TUTORIAL.md).  
 
 <a id="part"></a>
 ### Partitioning 
----
+---  
+Partitioned tables can improve query performance by allowing the query optimizer to scan only the needed data.  
+Partitioning is logical (not physical). Tables are paritioned during `CREATE TABLE` using the `PARTITION BY` clause.  
+
+Greenplum Database supports partitioning by range, by list and by a combination of both. It is generally a good idea to partition if the table is very large and the WHERE clauses search by range or list values. For example, if most queries tend to look up records
+by date.  
+
+
+    -- Example  
+    CREATE TABLE sales (trans_id int, date date, amount decimal(9,2), region text)  
+    DISTRIBUTED BY (trans_id) -- uses trans_id column for hashing into different segments  
+    PARTITION BY RANGE (date)  -- * PARTITION
+    SUBPARTITION BY LIST (region)  
+    SUBPARTITION TEMPLATE  
+    (SUBPARTITION usa VALUES ('usa'),  
+    SUBPARTITION asia VALUES ('asia'),  
+    SUBPARTITION europe VALUES ('europe')  
+    DEFAULT SUBPARTITION other_regions)  
+    (START (date '2011-01-01)))  INCLUSIVE  
+    END (date '2012-01-01') EXCLUSIVE  
+    EVERY (INTERVAL '1 month'),  
+    DEFAULT PARTITION outlying_dates);  
+      
+  
+  Tables can only be partitioned at creation.  <br>
+  </br>
+  
+  <p align="center"> ![partition] (https://github.com/syuja/GreenPlumSetup/blob/master/img/partition.png)</p>
+
+<sub><sup>Table scans and maintenance jobs will run more slowly the more the table is partitioned. However, queries will
+run faster if the **query optimizer can eliminate partitions based on query predicates**.</sub></sup>
 
 <a id="gpf"></a>
 ### gpfidst 
@@ -99,12 +133,12 @@ _**Greenplum Database machine**_:
   2. Create **external table** indicating the protocol as gpfdist and the port number the host uses to serve.  
   
 
-    `CREATE EXTERNAL TABLE faa.ext_load_otp  `
-    `(LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  `
-    `LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    `
-    `FORMAT 'csv' (header)  `
-    `LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  `
-    `--cease operation if greater than 50,000 errors `
+    `CREATE EXTERNAL TABLE faa.ext_load_otp  `  
+    `(LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  `  
+    `LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    `  
+    `FORMAT 'csv' (header)  `  
+    `LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  `  
+    `--cease operation if greater than 50,000 errors `  
 
 Now, when you use SELECT from external tables, gpfdist will serve files evenly to all segments. 
 
