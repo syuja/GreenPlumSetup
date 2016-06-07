@@ -37,17 +37,17 @@ Now you're ready to start the tutorial. We will mostly use the `~/gpadmin/gpdb-s
 
 <a id="help"> </a>
 ### Helpful Tips  
-It is helpful to set up a shortcut keyboard so that the host Operating System can maintain ownership of the keyboard and mouse.  
-<p align="center"> ![run_error](https://github.com/syuja/GreenPlumSetup/blob/master/img/install_run_error.png)</p> 
-Helpful: Ownership of keyboard and mouse ==> special key right cmd
-Global setting ==> right control ^ <== 
-helpful left control and arrows to move from full screen and out!!
-https://www.virtualbox.org/manual/ch01.html <== captured
+Set a keyboard shortcut to allow the host Operating System to retain ownership of the keyboard and mouse: 
+<p align = "center> ![access help](https://github.com/syuja/GreenPlumSetup/blob/master/img/help1.png)</p>  
+<p align="center"> ![button_settings](https://github.com/syuja/GreenPlumSetup/blob/master/img/help2.png)</p>   
+<p align="center"> ![global_settings](https://github.com/syuja/GreenPlumSetup/blob/master/img/help3.png)</p>   
 
-the image provided by greenplum will require that you install yum
-sudo yum install git-all
+To install git run:  
+    `sudo yum install git-all`  
+  
 
-to see version type :
-cat /proc/version
-
+To see the operating system version run:  
+    `cat /proc/version`  
+  
+  
 ### [Useful Commands](https://github.com/syuja/GreenPlumSetup/blob/master/docs/useful_commands) in Greenplum
