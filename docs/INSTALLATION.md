@@ -37,17 +37,20 @@ Now you're ready to start the tutorial. We will mostly use the `~/gpadmin/gpdb-s
 
 <a id="help"> </a>
 ### Helpful Tips  
-Set a keyboard shortcut to allow the host Operating System to retain ownership of the keyboard and mouse: 
-<p align = "center> ![access help](https://github.com/syuja/GreenPlumSetup/blob/master/img/help1.png)</p>  
-<p align="center"> ![button_settings](https://github.com/syuja/GreenPlumSetup/blob/master/img/help2.png)</p>   
-<p align="center"> ![global_settings](https://github.com/syuja/GreenPlumSetup/blob/master/img/help3.png)</p>   
-
+Set a keyboard shortcut to allow the host Operating System to retain ownership of the keyboard and mouse:  
+  
+  <p align= "center"> ![global_settings](https://github.com/syuja/GreenPlumSetup/blob/master/img/help1.png) </p>  
+   <p align= "center"> ![drop_down](https://github.com/syuja/GreenPlumSetup/blob/master/img/help2.png) </p>  
+   `Uncheck auto-capture keyboard and set the uncapture key:`  
+   <p align= "center"> ![change key](https://github.com/syuja/GreenPlumSetup/blob/master/img/help3.png) </p> 
+  
+  
 To install git run:  
-    `sudo yum install git-all`  
+      `sudo yum install git-all`  
   
 
 To see the operating system version run:  
-    `cat /proc/version`  
+      `cat /proc/version`  
   
   
 ### [Useful Commands](https://github.com/syuja/GreenPlumSetup/blob/master/docs/useful_commands) in Greenplum
