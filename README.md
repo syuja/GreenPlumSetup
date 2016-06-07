@@ -1,7 +1,8 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
 # Table of Contents
-  1. [What is Greenplum (GP)?] (#gp)  
-    a. [Basic Structure] (#struct)
+  1. [What is Greenplum Database (GP)?] (#gp)  
+    a. [Basic Structure] (#struct)  
+    b. [OLTP vs .OLAP] (#oltp)  
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)
   3. [Tutorial] (#tut)  
@@ -10,17 +11,18 @@
     c. [Create Tables] (#createtb)  
     d. [Data Loading] (#load)  
     e. [Queries and Performance Tuning] (#tuning)  
-  4. [Exercises] (doc/kb_sdk_dependencies.md)
-  5. [Backup and Recovery] (#backup)
-  6. [Intro to Greenplum In-Db analytics] (#analytics)
+  4. [Exercises] (docs/EXERCISES.md)
+
 
 
 <a id="gp"></a>
 ## What is Greenplum (GP)?
-
-  It's massively parallel processing (MPP) database server built on open source PostgreSQL.
-  - Essentially several PostgreSQL db instances acting together as one cohesive DBMS. 
-    - Greenplum supplements PostgreSQL (PSQL) to support parallel structure of: 
+  Greenplum Database is a massively parallel processing (MPP) database built on PostgreSQL (PSQL).  
+  - Consists of master node and segment nodes  
+    - master node contains catalog information
+    - all of the data is stored in the segment nodes  
+  - Essentially several PostgreSQL database instances acting together as one cohesive DBMS. 
+    - PSQL is supplemented to support parallel structure of: 
     parallel data loading using external tables, query optimizations, etc.  
 
 <a id="struct"></a>
@@ -55,8 +57,23 @@ sudo yum install git-all
 to see version type :
 cat /proc/version
 
+<a id="oltp"></a>
+### OLTP vs OLAP 
+OLTP (On-line Transaction Processing): characterized by a large number of short on-line transactions (INSERT, UPDATE, DELETE). Main
+emphasis is put on very fast query processing and effectiveness is measured by number of transactions per second (throughput).
+
+OLAP (On-line Analytical Processing): characterized by relatively low volume of transactions. Queries are often very complex and
+involve aggregations. Response time is effectiveness measure. 
+
+         | OLTP    | OLAP    |
+---------|---------|---------|
+Source of Data:| Operational data. OLTPs | Consolidation of various OLTPs| 
+Purpose of Data:| Day to day information | Data analysis |
+Data is:| Snapshot of ongoing state | Multi-dimensional view |
+
+
 <a id="tut"></a>
-### Tutorial
+## Tutorial
 1. **run start script!!!** ./start_all.sh <== otherwise will not be able to follow the steps
 WHAT IS TEMPLATE 1? <== psql??
 
