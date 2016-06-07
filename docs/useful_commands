@@ -1,17 +1,28 @@
 
 PSQL: 
-\du - displays users that have access to current database (list roles)
-\dt - list tables
+Listings: 
+\d - lists tables, views, sequences \d table_name shows description of table
+\du - list of roles (users and groups)
+\dt - list tables, also shows schemas
 \dv - list views
-\cd - change working directory
-\h - help on syntax for command \h SELECT or \h *
+\l - lists all databases
+
+Accessing Database: 
 \c - connect to a new database
 \q - quit database
-\l - lists all databases
-\timing [on | off] - toggles timing commands
 
+Help: 
+\h - help on syntax for SQL command \h SELECT or \h *
+\?  - list psql commands
+
+
+Utility: 
+\timing [on | off] - toggles timing commands
+\cd - change working directory
+\i - runs SQL script from inside database 
 
 FROM TERMINAL:
 psql -l - list all available databases
+psql -U username db - connects user to db
 
 Please find here: http://gpdb.docs.pivotal.io/gs/43/pdf/PSQLQuickRef.pdf
