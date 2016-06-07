@@ -71,46 +71,44 @@ In order to exploit the maximum parallelism possible, it is important to know a 
 Greenplum. Minor modifications to several parameters can result in great speedups.  
 
 <a id="ori"></a>
-### Orientation  
+### Orientation 
+---
 
 <a id="part"></a>
 ### Partitioning 
+---
 
 <a id="gpf"></a>
 ### gpfidst 
+---
 Simply using INSERT or COPY will **not** read or write data in **parallel**. 
 
-Reading into Greenplum Database:  
+Steps for reading in parallel.
   
   
 _**Host (serves data to be read into Greenplum)**_:  
-Copy the gpfdist utility to hosts that contain the external tables (the data that you want to read).  
-Add gpfdist to the $PATH of the hosts.   
-start gpfdist.  
-specify directory containing the data and the port to serve the data on.  
+  1. Copy the gpfdist utility to hosts that contain the external tables (the data that you want to read).  
+  2. Add gpfdist to the $PATH of the hosts.   
+  3. Start gpfdist by specifying directory containing the data and the port to serve the data: 
 
     gpfdist -d ~/home/directory/ -p 8081 > /tmp/stdout/goes/here 2>&1 &  
 
 
 _**Greenplum Database machine**_:  
-First, create local load table to copy external data into.  
-Then, create external table indicating the protocol as gpfdist and the port number the host uses to serve.   
+  1. Create local load table to copy external data into.  
+  2. Create **external table** indicating the protocol as gpfdist and the port number the host uses to serve.  
+  
 
     CREATE EXTERNAL TABLE faa.ext_load_otp  
     (LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  
     LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    
     FORMAT 'csv' (header)  
     LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  
-    --cease operation if greater than 50,000 errors`
-    
-
+    --cease operation if greater than 50,000 errors 
 
 Now, when you use SELECT from external tables, gpfdist will serve files evenly to all segments. 
 
-
   <p align="center"> ![gpfdist] (https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)</p>
-
-  
 
 **Note**: gpfload is a wrapper for gpfdist. Specify a task in a YAML control file, and gpload runs gpfdist using the configuration
 set in the control file.  
