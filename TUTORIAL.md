@@ -7,15 +7,17 @@
   d. [Data Loading] (#load)  
     e. [Queries and Performance Tuning] (#tuning)  
 
-**Before starting**: run the start script, otherwise you will not be able to connect to the database.
+**Before starting**: 
+  1. run the start script, otherwise you will not be able to connect to the database.  
     `[gpadmin@gpdb-sandbox]$ ./start_all.sh`  
+  2. review basic [commands] (../docs/useful_commands)  
 
-**Note**: there are two types of commands psql and bash commands; psql commands will begin with `#`  
+**Note**: there are two types of commands psql and bash commands; psql commands will begin with `#`.    
 
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)
 
-what is a template??
+Templates are boiler plates for new databases. 
 
 <a id="username"></a>
 ### 1. Create Username  
@@ -23,18 +25,15 @@ what is a template??
   - creates a new PostgreSQL (psql) user/role (wrapper for CREATE ROLE)  
   - P flag issues prompt for password  
 
-`dropuser <user_name>;`: drops user; semicolon is important ???wrapper?
-`DROP ROLE <user or group>;` :drops user...  
-
+`dropuser <user_name>;`: wrapper around DROP ROLE  
+`DROP ROLE <user or group>;`: drops user  
 `psql`:  
   - command-line client to connect to PostgreSQL server.  
   - PostgreSQL interactive terminal (can type queries interactively)  
 
-`\du`:  
-  - get a list of roles.  
+`\du`:  get a list of roles.  
 
-`\q`:  
-  - quit psql shell
+`\q`:  quit psql shell
 
 `psql -l`:  
   - list all available databases  
@@ -44,46 +43,40 @@ what is a template??
   
 
     `CREATE USER user2 WITH PASSWORD 'pivotal' NOSUPERUSER: alias for create role `  
-    `CREATE ROLE users -- role is an entity that can own database objects and have database privilege (can be "user" or  a "group")`  
-    `GRANT users TO user1, user2 --  defines access privileges; conveys the privileges granted to a role to each of its members`  
+    `CREATE ROLE users  `  
+    `GRANT users TO user1, user2`   
     `\q --quits psql`  
-    
 
-
+`ROLE`:  is an entity, user or group, that can own database objects and have database privileges  
+`GRANT TO`: defines access privileges; conveys the privileges granted to a role to each of its members    
 
 <a id="createdb"></a>
-### 2. Create a Database and Prepare it  
+### 2. Create a Database  
 `createdb`: wrapper for CREATE DATABASE command  
 `dropdb`: wrapper for DROP DATABASE  
-`psql -U user1 tutorial`: connects as user1 to tutorial db  
 
-????prepare it, so I need to add script stuff!!!
+`GRANT PRIVILEGES TO USERS`:  
+  - Grant user minimum permissions necessary 
+    - connect as admin    
+    - grant privileges  
 
-
-### `GRANT PRIVILEGES TO USERS`:  
-Grant users the minimum permissions required to do their work.  
-- connect as admin  
-- grant privileges  
-
-
-### `SCHEMA`  
+`SCHEMA`:  
   - container for a set of database objects (tables, data types, functions).
-  - namespace; Multiple schemas allow using one database for many applications. 
-  - access objects by prefixing with schema.  
+  - a namespace   
+  - avoids name collisions, so one database can have many applications  
+  - access objects by prefixing with schema.   
     - <schema>.table_person, employee.person or customer.person  
 
 ### `DROP SCHEMA IF EXISTS faa CASCADE`   
-  - cascade automatically drops objects (table, functions) that are contained in the schema.  
+  - cascade automatically drops objects (table, functions) that are contained in the schema   
 
 Each user has a search path; it determines which schemas are searched when referencing object (tables, views, etc).  
 
 `SET SEARCH_PATH TO faa, public, pg_catalog, gp_toolkit;`  
   - changes search_path temporarily  
 
-What if we want to change the search_path for a user more permanently?  
-
 `ALTER ROLE user1 SET search_path TO faa, public, pg_catalog, gp_toolkit;` :  
- - will be restored everytime the user logs into the database
+ - search_path is restored every time the user logs in  
 
 <a id="createtb"></a>
 ### 3. Create Tables:  
@@ -94,13 +87,7 @@ The definition of a table includes the distribution policy of the data, and the 
   - distribute data and query work evenly    
     - enable segments to accomplish most expensive query process steps locally  
   - distribute by  
-- for joins, use DISTRIBUTED BY (column,...) faster to join columns on different segments than it is to join rows on different segments  ???????  
 
-
-
-`\h` or `\?` : help;shows available postgresql commands  
-`\dt *;` :  shows all schemas  
-`\dt` or `\d`:  show only visible tables **in search_path** (add schemas to search path if necessary) 
 
 **running a script that creates tables** : 
     psql -U user1 tutorial -- sign in to db <tutorial>
@@ -118,9 +105,6 @@ The definition of a table includes the distribution policy of the data, and the 
 
 gpload is a wrapper for gpfdist. It call gpfdist using the setting specified in a YAML-formatted control file. Control file allows you to configure gpfdist in na controlled, repeatable fashion.   
 
-
-`\i` : run sql scripts  
-`\d d_cancellation_codes`: show description of table  
 
 ### A. Slowest But Simplest
     `INSERT INTO faa.d_cancellation_codes`  
@@ -147,51 +131,47 @@ Syntax:
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
 
 ### C. Load Data with Greenplum utilities:  
-#### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables
-1. gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & <== starts gpfdist process
-  -d sets "home" directory to read and write files
-  -p switch to set the port 
-  > /tmp/gpfdist.log redirects stdout to a log file
-  2>&1 redirects stderr to stdout which is being redirected to the log file
-  -- effectively silences all output!!
-get more help on gpfdist: http://gpdb.docs.pivotal.io/4350/client_tool_guides/load/unix/gpfdist.html
+#### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables  
+  1. run gpfdist on host (where data is located): 
+    `gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & -- starts gpfdist process`  
+    -d sets "home" directory to read and write files  
+    -p switch to set the port  
+   > /tmp/gpfdist.log redirects stdout to a log file  
+    2>&1 redirects stderr to stdout which is being redirected to the log file  
+    -- effectively silences all output!!  
 
-best load speed gpfdist, runs on  the servers where data is located
+get more help on [gpfdist] (http://gpdb.docs.pivotal.io/4350/client_tool_guides/load/unix/gpfdist.html)
 
-2. ps -A | grep gpfdist <== shows it running
+  2. check that gpfdist is running on the host:  
+    `ps -A | grep gpfdist -- shows it running`  
 
-3. more /tmp/gpfdist.log <== shows stdout and stderr of when gpfdist was executed
+  3. see log file produced:  
+    `more /tmp/gpfdist.log -- shows stdout, stderr of when gpfdist was executed`  
 
-4.create load tables <== psql session as admin
-  -A psql -U gpadmin tutorial
-  -B \i create_load_tables.sql <== creates 2 tables into whic gpdist will load data, and errros will be logged
-  -C faa_otp_laod table structured to match the format of the input data from the FAA Web site
+  4. Create load tables on Greenplum database:  
+    `--data to be read to load tables`  
+    `psql -U gpadmin tutorial`  
+    `\i create_load_tables.sql -- creates 2 load tables, please view script`  
+
   
-  let's take a closer look at create_load_tables.sql script:
-  create table faa.faa_otp_load(
-  Flt_Year smallint, <== column name followed by psql data type (smallint is 2 bytes)
-  Flt_Quarter smallint,
-  ...
-  AirlineID integer,
-  DepDelay numeric,
-  ...)
-  distribute by (Flt_Year, Flt_Month, Flt_DayofMonth); <== creates distribution key using 3 columns, hashes the distribution key,
-  result of hash function determines which segment stores which row, rows that have same distribution key stored in same segment
-  ==> ideal case: different tables joined on columns that have the same distribution key, why? much faster to join rows that are
-  on the same segment
-  ==> suppose have two tables Employees and Contact Information both contain Name column, if I use Name column as distribution key
-  and then do a join on Name where Name=, I'll be joining rows on 1 segment which will be very fast 
+  Take a closer look at create_load_tables.sql script:
+    `create table faa.faa_otp_load(`  
+    `Flt_Year smallint, <== column name followed by psql data type (smallint is 2 bytes)`  
+    `Flt_Quarter smallint,`  
+    `...`  
+    `AirlineID integer,`  
+    `DepDelay numeric,`  
+    `...)`  
+    `distribute by (Flt_Year, Flt_Month, Flt_DayofMonth);`  
+    `-- distributes rows across segments using three columns as the hash` 
+    `-- ideally, different tables are joined on columns with same hash key, `  
+    `since it's faster to join at segments than across segments`  
+ 
+ **Distributing rows randomly slows joins across segments. Distribution of data will affect performance,
+ depending on how user queries it.**  
   
-  create table faa.faa_load_errors (cmdtime timestamp with time zone, filename text, ...) <== timestamep with time zone 8 bytes 
-  data type
-  distribute by randomly; <== distributes rows in round-robin fashion among the segments (example: 10 rows to seg1, next 10 rows
-  to seg2, next 10 to seg3)
-  ==> distributing rows randomly slows joins down as joining rows across segments
-  
-  *how data is distributed will affect performance depending how user plans to access the data
-  
-  faa <== is the schema, like the namespace/container that will hold that table
-  
+  Note: faa is the schema, it's like namespace/container that will hold the table.  
+  ************************
 5. create external table definition with same struct as faa_otp_load table:
 
 *no data has moved from host to database yet. external table definition simply provide **references** two otp files on host.  
