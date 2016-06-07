@@ -90,8 +90,8 @@ _**Host (serves data to be read into Greenplum)**_:
   1. Copy the gpfdist utility to hosts that contain the external tables (the data that you want to read).  
   2. Add gpfdist to the $PATH of the hosts.   
   3. Start gpfdist by specifying directory containing the data and the port to serve the data: 
-
-    gpfdist -d ~/home/directory/ -p 8081 > /tmp/stdout/goes/here 2>&1 &  
+  
+    `gpfdist -d ~/home/directory/ -p 8081 > /tmp/stdout/goes/here 2>&1 &  `
 
 
 _**Greenplum Database machine**_:  
@@ -99,12 +99,12 @@ _**Greenplum Database machine**_:
   2. Create **external table** indicating the protocol as gpfdist and the port number the host uses to serve.  
   
 
-    CREATE EXTERNAL TABLE faa.ext_load_otp  
-    (LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  
-    LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    
-    FORMAT 'csv' (header)  
-    LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  
-    --cease operation if greater than 50,000 errors 
+    `CREATE EXTERNAL TABLE faa.ext_load_otp  `
+    `(LIKE faa.faa_otp_load) -- copy columns from faa.faa_otp_load  `
+    `LOCATION ('gpfdist://localhost:8081/otp*.gz') -- INDICATE WHERE DATA IS LOCATED important    `
+    `FORMAT 'csv' (header)  `
+    `LOG ERRORS INTO faa.faa_load_errors SEGMENT REJECT LIMIT 50000 rows; -- log errors into error table, and  `
+    `--cease operation if greater than 50,000 errors `
 
 Now, when you use SELECT from external tables, gpfdist will serve files evenly to all segments. 
 
