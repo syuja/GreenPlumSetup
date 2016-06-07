@@ -43,24 +43,6 @@
 
 <sub><sup> Ideally, data is distributed evenly, so that the segments start and finish at the same time.</sup></sub>
 
-<a id="inst"></a>
-## Installation
-Images of how to download
-untar then opening it
-initial look 
-
-<a id="help"> </a>
-### Helpful Tips
-Helpful: Ownership of keyboard and mouse ==> special key right cmd
-Global setting ==> right control ^ <== 
-helpful left control and arrows to move from full screen and out!!
-https://www.virtualbox.org/manual/ch01.html <== captured
-
-the image provided by greenplum will require that you install yum
-sudo yum install git-all
-
-to see version type :
-cat /proc/version
 
 <a id="oltp"></a>
 ### OLTP vs OLAP 
@@ -70,13 +52,21 @@ emphasis is put on very fast query processing and effectiveness is measured by n
 OLAP (On-line Analytical Processing): characterized by relatively low volume of transactions. Queries are often very complex and
 involve aggregations. Response time is effectiveness measure. 
 
+
          | OLTP    | OLAP    |
 ---------|---------|---------|
 Source of Data:| Operational data. OLTPs | Consolidation of various OLTPs| 
 Purpose of Data:| Day to day information | Data analysis |
-Data is:| Snapshot of ongoing state | Multi-dimensional view |
+Data is:| Snapshot of ongoing state | Multi-dimensional view |  
+ 
+**Relevance**: Data used for OLAP transactions should be stored in column-oriented tables instead of row-oriented tables. Queries will have better performance. 
 
+<a id="inst"></a>  
+## [Installation] (docs/INSTALLATION.md) 
+<a id="help"> </a>  
+  - [Helpful Tips] (docs/INSTALLATION.md)  
 
+  
 <a id="tut"></a>
 ## Tutorial
 1. **run start script!!!** ./start_all.sh <== otherwise will not be able to follow the steps
