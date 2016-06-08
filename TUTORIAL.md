@@ -16,8 +16,10 @@
 
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)
+This tutorial will guide you through setting up users, creating a database, creating tables, and loading data into 
+the database. We will also discuss some important considerations for performance tuning.  
 
-Templates are boiler plates for new databases. 
+Templates are boiler plates for new databases.  
 
 <a id="username"></a>
 ### 1. Create Username  
@@ -230,115 +232,110 @@ Show the results:
       tutorial=#\q -- quits   
 
 
-********
-#### gpload - wrapper program for gpfdist that does much of the setup work
-1. kill gpfdist since gpload executes gpfdist
-  - ps -A |grep gpfdist
-  - killall gpfdist
-  
-2. edit gpload.yaml
-  - TRUNCATE: true ensures that the data loaded previously will be removed before the load in this exercise starts
-  
-3. execute gpload with gpload.yaml input file ==> include -v flag to see details of loading process
-  -gpload -f gpload.yaml -l gpload.log -v
-  -f <control_file> : yaml file containing the load specification details
-  -l <log_file> : where to write the log file
-  - v (verbose mode) : verbose output of load steps as they are executed!
 
-B: Create and Load Fact Tables:
-  why? when you copy, it is a raw copy, column names, data types are the same. Transform filter unneeded rows and columns <== don't 
-  waste resources on unneeded data; convert data types, conformed dimension possibly join several external tables..
-  - moves data from load table to the fact table
-  help for gpload: gpload ? | less
+#### gpload - wrapper around gpfdist  
+1. Kill gpfdist (gpload will start it)  
+
+
+      ps -A |grep gpfdist
+      killall gpfdist
   
-  - psgl -U gpadmin tutorial
-  - tutorial=# \i create_fact_tables.sql ==> create final tables: excluded some cols, cast datatypes of some cols 
-  - tutorial=# \i load_into_fact_table.sql ==> load from loaded tables into fact tables ==> INSERT TO
+2. Edit gpload.yaml  
+  - TRUNCATE: true ensures that the previous data is discarded  
   
-  create_fact_tables script:
-  create table faa.otp_r ( <== _r is for row oriented
-  Flt_year smallint, <== column name and data types
-  Flt_Quarter smallint,
-  ...
-  Origin text, -- airport code <== this is a comment SQL comment starts with "--", C-style block comments can be used "/**/"
-  ...
-  )
-  distributed by (UniqueCarrier, FlightNum); <== will provide a distribution key, which will be hashed in order to place in
-  different segments..
+3. Execute gpload with gpload.yaml control file  
+
+
+      gpload -f gpload.yaml -l gpload.log -v  
+      # f <control_file> : yaml file containing the load specification details  
+      # l <log_file> : where to write the log file  
+      # v (verbose mode) : prints output of load steps
   
-  create table faa.otp_c(LIKE faa.otp_r) <== _c is for column-oriented and partitioned; LIKE new table copies all column names
-  their data types...
-  WITH (appendonly=true, orientation=column) <== WITH allows setting storage options, appendonly : create a table as an append-
-  optimized table instead of regular heap-storage table, orientation: only valid if appendonly option used, column oriented storage
-  distributed by (UniqueCarrier, FlightNum) 
-  PARTITION BY RANGE(FlightDate) <== enables supporting very large tables by logically dividing them into smaller more manageable
-  pieces, partitioning can improve performance by allowing query only needed data... doesn't change physical distribution
-  ( 
-  PARTITION mth START('2009-06-01'::date) END ('2010-10-31'::date) EVERY('1 mon'::interval)
-  );
-  )
-  
-  **http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html <== choosing orientation guidelines
-  **http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html <== partitioning guidelines
+
+#### Create and Load Fact Tables:  
+When we copy from the external table into the load table, we simply copy raw data. We copy Load tables into Fact tables, so that we
+may transform the data. Transforming means discarding unneeded data, converting data types, renaming columns and possibly joining several external tables. Transforming makes the data more usable. 
+we can use it for our particular application.   
+
+      help for gpload: gpload ? | less  
+      psgl -U gpadmin tutorial  
+      tutorial=# \i create_fact_tables.sql ==> create final tables: excluded some cols, cast datatypes of some cols  
+      tutorial=# \i load_into_fact_table.sql ==> load from loaded tables into fact tables ==> INSERT TO
  
-  load_into_fact_table script:
-  insert into faa.otp_r select l.Flt_year, l.Flt_Quarter, l.Flt_Month, l.Flt_DayofMonth,
-  ... l.DepDelay::float8, -- cast from numeric
-  l.DepartureDelayGroups::smallint,
-  l.TaxiOut::integer,
-  l.WheelsOff,
-  coalesce(l.CarrierDelay::smallint, 0),
-  coalesce(l.WeatherDelay::smallint, 0), <== cast to smallint, if it's NULL then place a 0 there
-  from faa.faa_otp_load l; <== l like an alias for that load table
+  `create_fact_tables script:`  
+
+      create table faa.otp_r ( -- _r is for row oriented  
+      Flt_year smallint, -- column name and data types  
+      Flt_Quarter smallint,  
+      ...  
+      Origin text, -- airport code  
+      ...  
+      distributed by (UniqueCarrier, FlightNum); -- will provide a distribution key
+      --key will be hashed to distribute across segments  
   
-  insert into faa.otp_c select * from faa.otp_r; <== copy into _r without all of the formatting in _c table
+  `script for colum-oriented table: `   
+
+     create table faa.otp_c(LIKE faa.otp_r) -- _c is for column-oriented
+     -- LIKE copies column names, data types from another table  
+     WITH (appendonly=true, orientation=column) -- column-oriented, appendonly instead of heap  
+     distributed by (UniqueCarrier, FlightNum)   
+     PARTITION BY RANGE(FlightDate)  
+      PARTITION mth START('2009-06-01'::date) END ('2010-10-31'::date) EVERY('1 mon'::interval)  
+      );  --partitioning can improve performance  
   
-Data Loading Summary: 
-ELT allows load processes to make use of massive parallelissm ... set-based operations can be done in parallel
-COPY loads using single process
-external tables provide a means of leveraging the parallel processing power of segments <== also allows us to access multiple
-data sources with one SELECT of an external table
+ Guidelines for [orientation] (http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html) 
+ Guidelines for [partioning](http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)
+ 
+  `Transform (load) into Fact table`:  
 
-
-
+      insert into faa.otp_r select l.Flt_year, l.Flt_Quarter, l.Flt_Month, l.Flt_DayofMonth,  
+      ... l.DepDelay::float8, -- cast from numeric  
+      l.DepartureDelayGroups::smallint,  
+      l.TaxiOut::integer,  
+      l.WheelsOff,  
+      coalesce(l.CarrierDelay::smallint, 0),  
+      coalesce(l.WeatherDelay::smallint, 0), <== cast to smallint, if NULL then 0   
+      from faa.faa_otp_load l; <== l like an alias for that load table
+      insert into faa.otp_c select * from faa.otp_r; -- copy into _r without all of the formatting in _c table
+  
+#### Data Loading Summary:   
+ELT allows load processes to make use of massive parallelissm (set-based operations can be done in parallel).  
+COPY loads using single process.    
+External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
+data sources with one SELECT statement of an external table. 
 
 <a id ="tuning"></a>
-5. Queries and Performance Tuning:
-useful for writing and tuning queries
+5. Queries and Performance Tuning:  
+This section provides a useful introduction into Greenplum queries.  
 
-master receives, parses and optimizes queries resulting query is either parallel or targeted.
-master then dispatches query plans to all segments... each segment is responsible for executing local database operations on its
-own set of data...
-
-most database operations - execute across all segments in parallel, performed on a segment database independent of the data
+First, the master receives, parses and optimizes queries producing a resulting query that is either parallel or targeted.  
+The master then dispatches query plans to all segments. Each segment is responsible for executing local database operations on its
+own set of data.  
+  
+Most database operations - execute across all segments in parallel, performed on a segment database independent of the data
 stored in the other segment databases...
 
-[*****add image****]
 
-*query plan: set of operations GP db will perform to produce the answer to a query; executed bottom up
-*motion operation: involves moving tuples between the segments during query processing; describes when and how data should be 
-transferred between nodes during query execution. (3 types: broadcast: every seg target data to all other; redistribute: every seg
-rehashes and distributes to every seg gather: every segment to a single node)
-*slice: portion of plan that segments can work on independently; sliced wherever motion operation occurs
+`Terminology`:  
+  - query plan: set of operations GP db will perform to produce the answer to a query; executed bottom up
+  - motion operation: moving tuples between the segments during query processing; 
+    - describes when and how data should be transferred between nodes during query execution.  
+  - slice: portion of plan that segments can work on independently; 
+    - query plan is sliced wherever motion operation occurs  
+    - slices are passed to segments  
 
-Understanding Parallel Query Execution:
- Processes:
- query dispatcher (QD): on master, process responsible for creating and dispatching the query plan
- - also accumulates and presents the final result
- query executor (QE): on segment, process responsible for completing its portion of work and communicating its intermediate results
+`Understanding Parallel Query Execution`:  
+ Processes:  
+  - query dispatcher (QD): on master, process responsible for creating and dispatching the query plan
+    - also accumulates and presents the final result
+  - query executor (QE): on segment, process responsible for completing its portion of work and communicating its intermediate results
  to the other worker processes
+  - gangs: related processes working on the same slice but on different segments  
+
  
- at least one worker process assigned to each slice of the query plan:: each works on assigned portion of query plan independently
- GANGS: <== related processes working on same slice but different segments
- as portion of work is completed, tuples flow up the query plan from one gang of processes to the next
- IPC btwn segments is referred t as interconnect component of the GP db
-
-*more info on query plan: http://gpdb.docs.pivotal.io/4330/admin_guide/parallel_proc.html
-understanding parallel query execution: 
+ At least one worker process is assigned to each slice of the query plan. Each works on assigned portion of query plan independently.
+ As a portion of the work is completed, tuples of data flow up the query plan from one gang to the next. The inter-process communication between segments is referred to as the _interconnect component_ of the Greenplum database.  
 
 
-Please see EXERCISES.md to complete some exercises for part V.
-
-
-
-*most important time it with data, and see how to interface it with python... what do I call greenplum? or postgre from python??
+More info on [query plan] (http://gpdb.docs.pivotal.io/4330/admin_guide/parallel_proc.html)  
+Please see [Exercises] (https://github.com/syuja/GreenPlumSetup/blob/master/TUTORIAL.md) to complete some practice exercises.   
