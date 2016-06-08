@@ -289,7 +289,9 @@ Show the results:
       from faa.faa_otp_load l; <== l like an alias for that load table
       insert into faa.otp_c select * from faa.otp_r; -- copy into _r without all of the formatting in _c table
   
-  ##### Data Loading Summary:   
+  
+    
+#### Data Loading Summary:   
   ELT (extract, load, transform) allows load processes to make use of massive parallelissm. Gpfdist reads the data in parallel. Once loaded, we can leverage the parallelism of the Greenplum database to tranform it (set-based operations can be done in parallel).   
   COPY loads using single process, so it is less efficient.     
   External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
