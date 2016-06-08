@@ -67,7 +67,7 @@ Templates are boiler plates for new databases.
   - access objects by prefixing with schema.   
     - <schema>.table_person, employee.person or customer.person  
 
-### `DROP SCHEMA IF EXISTS faa CASCADE`   
+`DROP SCHEMA IF EXISTS faa CASCADE`   
   - cascade automatically drops objects (table, functions) that are contained in the schema   
 
 Each user has a search path; it determines which schemas are searched when referencing object (tables, views, etc).  
@@ -89,10 +89,10 @@ The definition of a table includes the distribution policy of the data, and the 
   - distribute by  
 
 
-**running a script that creates tables** : 
-    psql -U user1 tutorial -- sign in to db <tutorial>
-    tutorial=# \i create_dim_tables.sql -- creates tables 
-    tutorial# \dt -- shows all tables create  
+**Running a script that creates tables** : 
+      psql -U user1 tutorial -- sign in to db <tutorial>  
+      tutorial=# \i create_dim_tables.sql -- creates tables  
+     tutorial# \dt -- shows all tables create  
       
 
 
@@ -106,14 +106,14 @@ The definition of a table includes the distribution policy of the data, and the 
 gpload is a wrapper for gpfdist. It call gpfdist using the setting specified in a YAML-formatted control file. Control file allows you to configure gpfdist in na controlled, repeatable fashion.   
 
 
-### A. Slowest But Simplest
+#### A. Slowest But Simplest
     INSERT INTO faa.d_cancellation_codes   
     VALUES('A','Carrier'),('B','Weather'),('C','NAS')...     
  **see inside table**:  
     SELECT * FROM faa.d_cancellation_codes;  
     
 
-### B. Copy Statement
+#### B. Copy Statement
     \COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS   
     INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS; 
     -- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode   
@@ -130,8 +130,8 @@ Syntax:
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
 
-### C. Load Data with Greenplum utilities:  
-#### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables  
+#### C. Load Data with Greenplum utilities:  
+##### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables  
   1. run gpfdist on host (where data is located): 
     `gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & -- starts gpfdist process`  
     -d sets "home" directory to read and write files  
