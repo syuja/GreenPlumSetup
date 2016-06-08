@@ -208,12 +208,13 @@ example:
       LOG ERRORS INTO SEGMENT REJECT LIMIT 50000 rows;  
   
 
-  6. Move from external table to load table   
+  6. Move from external table to load table  
 
 
-      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp; -- many gpfdist processes running, one on each host...  
+      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;   
+      -- many gpfdist processes running, one on each host.      
 
-<p align="center> ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)  </p>
+<p align= "center"> ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)  </p>
 
 more on [external database](http://gpdb.docs.pivotal.io/4320/admin_guide/load.html) tables  
 
