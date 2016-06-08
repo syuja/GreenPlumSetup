@@ -84,15 +84,18 @@ Each user has a search path; it determines which schemas are searched when refer
 The definition of a table includes the distribution policy of the data, and the distribution policy will affect performance.   
 
 **Our goals**:  
-  - distribute data and query work evenly    
+  - distribute data and query work evenly
     - enable segments to accomplish most expensive query process steps locally  
-  - distribute by  
+  - define a distribution key that will optimize joins  
+    - faster to join rows at segments than across segments  
+    
+  
 
+**Running a script that creates tables** :  
 
-**Running a script that creates tables** : 
       psql -U user1 tutorial -- sign in to db <tutorial>  
       tutorial=# \i create_dim_tables.sql -- creates tables  
-     tutorial# \dt -- shows all tables create  
+      tutorial# \dt -- shows all tables create  
       
 
 
