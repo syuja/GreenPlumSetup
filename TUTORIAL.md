@@ -97,7 +97,7 @@ The definition of a table includes the distribution policy of the data, and the 
 <a id="load"></a>
 ### 4. Data Loading: 3 Ways  
 **INSERT** is slowest, but simplest.     
-**COPY** allows the user specify the format of external text file **but** not parallel.    
+**COPY** allows the user to specify the format of external text file **but** it doesn't read/write in parallel.    
 **Greenplum utilities**, gpfdist and gpload, uses **external data tables** at **_HIGH DATA TRANSFER RATES_** (in parallel).    
   
 
@@ -123,10 +123,10 @@ Syntax:
 
     \COPY <table_name> FROM 'file_name' CSV --comma-separated mode  
     HEADER -- file contains a header row with colnames   
-    LOG ERRORS INTO --optionally precedes reject, specifies error table where rows with formatting errors will be logged   
+    LOG ERRORS INTO --specifies error table to log rows with errors  
     <error_table> KEEP -- do not drop error_table   
     REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows   
-    --if limit exceeded then entire external table operation is aborted   
+    --if limit exceeded, then entire external table operation is aborted   
      
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
@@ -147,7 +147,7 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
     `ps -A | grep gpfdist -- shows it running`  
 
   3. see log file produced:  
-    `more /tmp/gpfdist.log -- shows stdout, stderr of when gpfdist was executed`  
+    `more /tmp/gpfdist.log -- see stdout, stderr of gpdist`    
 
   4. Create load tables on Greenplum database:  
     `--data to be read to load tables`  
@@ -158,29 +158,29 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
   Take a closer look at create_load_tables.sql script:  
   
     `create table faa.faa_otp_load(`  
-    `Flt_Year smallint, <== column name followed by psql data type (smallint is 2 bytes)`  
+    `Flt_Year smallint, -- column name followed by data type`  
     `Flt_Quarter smallint,`  
     `...`  
     `AirlineID integer,`  
     `DepDelay numeric,`  
     `...)`  
     `distribute by (Flt_Year, Flt_Month, Flt_DayofMonth);`  
-    `-- distributes rows across segments using three columns as the hash` 
+    `-- distributes rows across segments using three columns as the hash`  
     `-- ideally, different tables are joined on columns with same hash key, `  
-    `since it's faster to join at segments than across segments`  
+    `since it's faster to join at segments than across segments`   
  
- **Distributing rows randomly slows joins across segments**. Distribution of data will affect performance,
+ **Distributing by randomly** slows joins across segments. Distribution of data may affect performance,
  depending on how user queries it.    
   
   Note: faa is a schema, it's like namespace/container that will hold the table.  
 
   4. Create an External table:  
   Creating an external table doesn't move the data into our Greenplum database. The external table definition simply provides 
-  **references** to two otp files on the host. It also declares the communication protocol, `gpfdist`, and the port number to use.  
+  **references** to external files on the host. It also declares the communication protocol, `gpfdist`, and the port number to use.  
   
   External tables can be accessed as if they were regular, local database tables. They can be queried directly and in parallel.   
 
-  External tables are mainly used to facilitate the moving of the host data files to the database. They allow us to call SELECT INTO, and 
+  External tables are mainly used to facilitate the moving of host data files to the local database. They allow us to call SELECT INTO, and 
   also to exploit parallelism by establishing a connection using gpfdist.  
 
   syntax:   
@@ -206,8 +206,8 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
   5. Move from external table to load table  
 
 
-      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;     
-      -- many gpfdist processes running, one on each host.   
+      `INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;`     
+      `-- many gpfdist processes running, one on each host.`     
   
 ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)
 
@@ -228,8 +228,8 @@ Show the results:
   
 
 
-    ps -A |grep gpfdist
-    killall gpfdist
+    `ps -A |grep gpfdist`  
+    `killall gpfdist`  
   
 2. Edit gpload.yaml  
   - TRUNCATE: true ensures that the previous data is discarded  
@@ -237,10 +237,10 @@ Show the results:
 3. Execute gpload with gpload.yaml control file   
 
 
-      gpload -f gpload.yaml -l gpload.log -v  
-      # f <control_file> : yaml file containing the load specification details  
-      # l <log_file> : where to write the log file  
-      # v (verbose mode) : prints output of load steps
+      `gpload -f gpload.yaml -l gpload.log -v`   
+      `# f <control_file> : yaml file containing the load specification details`    
+      `# l <log_file> : where to write the log file `   
+      `# v (verbose mode) : prints output of load steps`  
   
 
 #### Create and Load Fact Tables:  
