@@ -177,18 +177,18 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
  **Distributing rows randomly slows joins across segments**. Distribution of data will affect performance,
  depending on how user queries it.    
   
-Note: faa is a schema, it's like namespace/container that will hold the table.  
+  Note: faa is a schema, it's like namespace/container that will hold the table.  
 
-  5. Create an external table definition with same columns as faa_otp_load table:  
+  4. Create an External table:  
   Creating an external table doesn't move the data into our Greenplum database. The external table definition simply provides 
-**references** to two otp files on the host. It also defines the communication protocol to be `gpfdist` and the port number to use. 
+  **references** to two otp files on the host. It also defines the communication protocol, `gpfdist`, and the port number to use.  
   
-External tables can be accessed as if they were regular, local database tables. They can be queried directly and in parallel.  
+  External tables can be accessed as if they were regular, local database tables. They can be queried directly and in parallel.   
 
-Mainly, external tables are used to facilitate the moving of the host data files to the database. They allows to call SELECT INTO, adn
-also to exploit parallelism by establishing a connection using gpfdist.  
+  External tables are mainly used to facilitate the moving of the host data files to the database. They allow us to call SELECT INTO, and 
+  also to exploit parallelism by establishing a connection using gpfdist.  
 
-syntax:   
+  syntax:   
 
       CREATE <READABLE|WRITABLE> EXTERNAL TABLE <table_name> -- readable is default, used for loading data into Greenplum Database  
       LIKE <other_table> -- specifies a table from which column names, distribution policy and data types is copied  
@@ -199,7 +199,7 @@ syntax:
       --at limit the whole external table is dropped  
   
   
-example:  
+  example:  
 
       CREATE EXTERNAL TABLE faa.ext_load_otp  
       (LIKE faa.faa_otp_load)  
@@ -208,12 +208,13 @@ example:
       LOG ERRORS INTO SEGMENT REJECT LIMIT 50000 rows;  
   
 
-  6. Move from external table to load table  
+  5. Move from external table to load table  
 
 
-      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;   
-      -- many gpfdist processes running, one on each host.      
-
+      `INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;`     
+      `-- many gpfdist processes running, one on each host.`       
+      
+  
 <p align= "center"> ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)  </p>
 
 more on [external database](http://gpdb.docs.pivotal.io/4320/admin_guide/load.html) tables  
