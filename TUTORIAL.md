@@ -212,10 +212,13 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
 
 
       `INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;`     
-      `-- many gpfdist processes running, one on each host.`       
+      `-- many gpfdist processes running, one on each host.`   
       
   
-<p align= "center"> ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)  </p>
+  
+
+![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)
+
 
 more on [external database](http://gpdb.docs.pivotal.io/4320/admin_guide/load.html) tables  
 
