@@ -98,34 +98,34 @@ The definition of a table includes the distribution policy of the data, and the 
 
 <a id="load"></a>
 ### 4. Data Loading: 3 Ways  
-  A.  INSERT is slowest, but simplest   
-  B.  COPY: specify the format of external text file **but** not parallel  
-  C.  Greenplum utilities: gpfdist and gpload using **external data tables** at **_HIGH DATA TRANSFER RATES_** (parallel)  
+**INSERT** is slowest, but simplest.     
+**COPY** allows the user specify the format of external text file **but** not parallel.    
+**Greenplum utilities**, gpfdist and gpload, uses **external data tables** at **_HIGH DATA TRANSFER RATES_** (parallel).    
   
 
 gpload is a wrapper for gpfdist. It call gpfdist using the setting specified in a YAML-formatted control file. Control file allows you to configure gpfdist in na controlled, repeatable fashion.   
 
 
 ### A. Slowest But Simplest
-    `INSERT INTO faa.d_cancellation_codes`  
-    `VALUES('A','Carrier'),('B','Weather'),('C','NAS')... `  
+    INSERT INTO faa.d_cancellation_codes   
+    VALUES('A','Carrier'),('B','Weather'),('C','NAS')...     
  **see inside table**:  
-    `SELECT * FROM faa.d_cancellation_codes;`  
+    SELECT * FROM faa.d_cancellation_codes;  
     
 
 ### B. Copy Statement
-    `\COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS`  
-    `INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS;` 
-    `-- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode`  
+    \COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS   
+    INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS; 
+    -- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode   
     
 
-Syntax:
-    `\COPY <table_name> FROM 'file_name' CSV --comma-separated mode` 
-    `HEADER -- file contains a header row with colnames`  
-    `LOG ERRORS INTO --optionally precedes reject, specifies error table where rows with formatting errors will be logged`  
-    `<error_table> KEEP -- do not drop error_table`  
-    `REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows`  
-   `--if limit exceeded then entire external table operation is aborted`  
+Syntax:  
+    \COPY <table_name> FROM 'file_name' CSV --comma-separated mode  
+    HEADER -- file contains a header row with colnames   
+    LOG ERRORS INTO --optionally precedes reject, specifies error table where rows with formatting errors will be logged   
+    <error_table> KEEP -- do not drop error_table   
+    REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows   
+   --if limit exceeded then entire external table operation is aborted   
      
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
