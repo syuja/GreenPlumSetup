@@ -103,39 +103,42 @@ The definition of a table includes the distribution policy of the data, and the 
 ### 4. Data Loading: 3 Ways  
 **INSERT** is slowest, but simplest.     
 **COPY** allows the user specify the format of external text file **but** not parallel.    
-**Greenplum utilities**, gpfdist and gpload, uses **external data tables** at **_HIGH DATA TRANSFER RATES_** (parallel).    
+**Greenplum utilities**, gpfdist and gpload, uses **external data tables** at **_HIGH DATA TRANSFER RATES_** (in parallel).    
   
 
-gpload is a wrapper for gpfdist. It call gpfdist using the setting specified in a YAML-formatted control file. Control file allows you to configure gpfdist in na controlled, repeatable fashion.   
+`gpload` is a wrapper for `gpfdist`. It calls `gpfdist` using the settings specified in a YAML-formatted control file. The control file allows you to configure `gpfdist` in a controlled, repeatable fashion.   
 
 
 #### A. Slowest But Simplest
     INSERT INTO faa.d_cancellation_codes   
-    VALUES('A','Carrier'),('B','Weather'),('C','NAS')...     
+    VALUES('A','Carrier'),('B','Weather'),('C','NAS')... ;    
  **see inside table**:  
-    SELECT * FROM faa.d_cancellation_codes;  
+
+      SELECT * FROM faa.d_cancellation_codes;  
     
 
-#### B. Copy Statement
+#### B. Copy Statement  
+
     \COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS   
     INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS; 
     -- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode   
     
 
 Syntax:  
+
     \COPY <table_name> FROM 'file_name' CSV --comma-separated mode  
     HEADER -- file contains a header row with colnames   
     LOG ERRORS INTO --optionally precedes reject, specifies error table where rows with formatting errors will be logged   
     <error_table> KEEP -- do not drop error_table   
     REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows   
-   --if limit exceeded then entire external table operation is aborted   
+    --if limit exceeded then entire external table operation is aborted   
      
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
 
 #### C. Load Data with Greenplum utilities:  
-##### i. gpdist: guarantees maximum parallelism while reading from or writing to external tables  
-  1. run gpfdist on host (where data is located): 
+i. gpdist: guarantees maximum parallelism while reading from or writing to external tables   
+  1. run gpfdist on host (where data is located):   
     `gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & -- starts gpfdist process`  
     -d sets "home" directory to read and write files  
     -p switch to set the port  
@@ -143,7 +146,7 @@ Syntax:
     2>&1 redirects stderr to stdout which is being redirected to the log file  
     -- effectively silences all output!!  
 
-get more help on [gpfdist] (http://gpdb.docs.pivotal.io/4350/client_tool_guides/load/unix/gpfdist.html)
+<sub><sup>get more help on [gpfdist] (http://gpdb.docs.pivotal.io/4350/client_tool_guides/load/unix/gpfdist.html)</sup></sub>
 
   2. check that gpfdist is running on the host:  
     `ps -A | grep gpfdist -- shows it running`  
@@ -157,7 +160,8 @@ get more help on [gpfdist] (http://gpdb.docs.pivotal.io/4350/client_tool_guides/
     `\i create_load_tables.sql -- creates 2 load tables, please view script`  
 
   
-  Take a closer look at create_load_tables.sql script:
+  Take a closer look at create_load_tables.sql script:  
+  
     `create table faa.faa_otp_load(`  
     `Flt_Year smallint, <== column name followed by psql data type (smallint is 2 bytes)`  
     `Flt_Quarter smallint,`  
@@ -170,48 +174,58 @@ get more help on [gpfdist] (http://gpdb.docs.pivotal.io/4350/client_tool_guides/
     `-- ideally, different tables are joined on columns with same hash key, `  
     `since it's faster to join at segments than across segments`  
  
- **Distributing rows randomly slows joins across segments. Distribution of data will affect performance,
- depending on how user queries it.**  
+ **Distributing rows randomly slows joins across segments**. Distribution of data will affect performance,
+ depending on how user queries it.    
   
-  Note: faa is the schema, it's like namespace/container that will hold the table.  
-  ************************
-5. create external table definition with same struct as faa_otp_load table:
+Note: faa is a schema, it's like namespace/container that will hold the table.  
 
-*no data has moved from host to database yet. external table definition simply provide **references** two otp files on host.  
-*external tables enable accessing external files as if they were regular database tables. can query external table data directly
-and in parallel 
-*creating external database table will facilitate moving host data files to database (can call SELECT INTO using the external
-database table and copy into local database)
+  5. Create an external table definition with same columns as faa_otp_load table:  
+  Creating an external table doesn't move the data into our Greenplum database. The external table definition simply provides 
+**references** to two otp files on the host. It also defines the communication protocol to be `gpfdist` and the port number to use. 
+  
+External tables can be accessed as if they were regular, local database tables. They can be queried directly and in parallel.  
 
-syntax: 
-CREATE <READABLE|WRITABLE> EXTERNAL TABLE <table_name> <== readable is default, used for loading data into Greenplum Database
-LIKE <other_table> <== specifies a table from which the new external table automatically copies all column names, data types and 
-distribution policy
-LOCATION <protocol://host:port_num/path/file',...> <== specifies the url of external data source to be used to populate the
-external table
-FORMAT <'text'|'csv'>
-LOG ERRORS INTO <error_table> <== can examine to see error rows that were not loaded
-SEGMENT REJECT LIMIT <count> [ROWS|PERCENT]; <== row with errors discarded until limit reached, if limit reached discard whole
-thing
+Mainly, external tables are used to facilitate the moving of the host data files to the database. They allows to call SELECT INTO, adn
+also to exploit parallelism by establishing a connection using gpfdist.  
 
-CREATE EXTERNAL TABLE faa.ext_load_otp
-(LIKE faa.faa_otp_load)
-LOCATION ('gpfdist: //localhost8081/otp*.gz')
-FORMAT 'csv' (header)
-LOG ERRORS INTO SEGMENT REJECT LIMIT 50000 rows;
+syntax:   
 
-finally move from external table to load table
-INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp; <== many gpfdist processes running, one on each host...
+      CREATE <READABLE|WRITABLE> EXTERNAL TABLE <table_name> -- readable is default, used for loading data into Greenplum Database  
+      LIKE <other_table> -- specifies a table from which column names, distribution policy and data types is copied  
+      LOCATION <protocol://host:port_num/path/file',...> -- specifies protocol, url and port of external data  
+      FORMAT <'text'|'csv'>  
+      LOG ERRORS INTO <error_table> -- save errors to error table
+      SEGMENT REJECT LIMIT <count> [ROWS|PERCENT]; -- rows with errors are discarded, until limit reached
+      --at limit the whole external table is dropped  
+  
+  
+example:  
 
-more on external database tables: http://gpdb.docs.pivotal.io/4320/admin_guide/load.html
+      CREATE EXTERNAL TABLE faa.ext_load_otp  
+      (LIKE faa.faa_otp_load)  
+      LOCATION ('gpfdist: //localhost8081/otp*.gz')  
+      FORMAT 'csv' (header)  
+      LOG ERRORS INTO SEGMENT REJECT LIMIT 50000 rows;  
+  
 
--Show the results:
-tutorial=# \x <== opens expanded display
-tutorial=# SELECT DISTINCT relname, errmsg, count(*)
-        FROM faa.faa_load_errors GROUP BY 1,2;
-tutorial=#\q
+  6. Move from external table to load table   
 
 
+      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp; -- many gpfdist processes running, one on each host...  
+
+<p align="center> ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)  </p>
+
+more on [external database](http://gpdb.docs.pivotal.io/4320/admin_guide/load.html) tables  
+
+Show the results:  
+
+      tutorial=# \x -- opens expanded display  
+      tutorial=# SELECT DISTINCT relname, errmsg, count(*)  
+      FROM faa.faa_load_errors GROUP BY 1,2;  
+      tutorial=#\q -- quits   
+
+
+********
 #### gpload - wrapper program for gpfdist that does much of the setup work
 1. kill gpfdist since gpload executes gpfdist
   - ps -A |grep gpfdist
