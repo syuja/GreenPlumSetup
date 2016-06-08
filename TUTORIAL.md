@@ -19,8 +19,6 @@
 This tutorial will guide you through setting up users, creating a database, creating tables, and loading data into 
 the database. We will also discuss some important considerations for performance tuning.  
 
-Templates are boiler plates for new databases.  
-
 <a id="username"></a>
 ### 1. Create Username  
 `CREATE USER -P:`  
@@ -33,17 +31,12 @@ Templates are boiler plates for new databases.
   - command-line client to connect to PostgreSQL server.  
   - PostgreSQL interactive terminal (can type queries interactively)  
 
-`\du`:  get a list of roles.  
-
-`\q`:  quit psql shell
-
 `psql -l`:  
   - list all available databases  
     - postgres: holds system wide info  
     - template0: pristine template holds core postgres stuff  
     - template1 default template for new db can be changed  
   
-
     `CREATE USER user2 WITH PASSWORD 'pivotal' NOSUPERUSER: alias for create role `  
     `CREATE ROLE users  `  
     `GRANT users TO user1, user2`   
@@ -69,7 +62,7 @@ Templates are boiler plates for new databases.
   - access objects by prefixing with schema.   
     - <schema>.table_person, employee.person or customer.person  
 
-`DROP SCHEMA IF EXISTS faa CASCADE`   
+`DROP SCHEMA IF EXISTS faa CASCADE;`   
   - cascade automatically drops objects (table, functions) that are contained in the schema   
 
 Each user has a search path; it determines which schemas are searched when referencing object (tables, views, etc).  
@@ -183,7 +176,7 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
 
   4. Create an External table:  
   Creating an external table doesn't move the data into our Greenplum database. The external table definition simply provides 
-  **references** to two otp files on the host. It also defines the communication protocol, `gpfdist`, and the port number to use.  
+  **references** to two otp files on the host. It also declares the communication protocol, `gpfdist`, and the port number to use.  
   
   External tables can be accessed as if they were regular, local database tables. They can be queried directly and in parallel.   
 
@@ -213,12 +206,9 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
   5. Move from external table to load table  
 
 
-      `INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;`     
-      `-- many gpfdist processes running, one on each host.`   
-      
+      INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;     
+      -- many gpfdist processes running, one on each host.   
   
-  
-
 ![gpfdist_image](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpfdist_figure.png)
 
 
@@ -235,15 +225,16 @@ Show the results:
 
 #### gpload - wrapper around gpfdist  
 1. Kill gpfdist (gpload will start it)  
+  
 
 
-      ps -A |grep gpfdist
-      killall gpfdist
+    ps -A |grep gpfdist
+    killall gpfdist
   
 2. Edit gpload.yaml  
   - TRUNCATE: true ensures that the previous data is discarded  
   
-3. Execute gpload with gpload.yaml control file  
+3. Execute gpload with gpload.yaml control file   
 
 
       gpload -f gpload.yaml -l gpload.log -v  
@@ -253,11 +244,11 @@ Show the results:
   
 
 #### Create and Load Fact Tables:  
-When we copy from the external table into the load table, we simply copy raw data. We copy Load tables into Fact tables, so that we
-may transform the data. Transforming means discarding unneeded data, converting data types, renaming columns and possibly joining several external tables. Transforming makes the data more usable. 
-we can use it for our particular application.   
+  When we copy from the external table into the load table, we simply copy raw data. We copy Load tables into Fact tables, so that we
+  may **transform** the data. Transforming means discarding unneeded data, converting data types, renaming columns and possibly joining several external tables. Transforming makes the data more usable. 
+  We can use it for our particular application.   
 
-      help for gpload: gpload ? | less  
+      gpload ? | less  -- help for gpload  
       psgl -U gpadmin tutorial  
       tutorial=# \i create_fact_tables.sql ==> create final tables: excluded some cols, cast datatypes of some cols  
       tutorial=# \i load_into_fact_table.sql ==> load from loaded tables into fact tables ==> INSERT TO
@@ -283,8 +274,8 @@ we can use it for our particular application.
       PARTITION mth START('2009-06-01'::date) END ('2010-10-31'::date) EVERY('1 mon'::interval)  
       );  --partitioning can improve performance  
   
- Guidelines for [orientation] (http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html) 
- Guidelines for [partioning](http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)
+   Guidelines for [orientation] (http://gpdb.docs.pivotal.io/4380/admin_guide/ddl/ddl-storage.html)   
+  Guidelines for [partioning](http://gpdb.docs.pivotal.io/4350/admin_guide/ddl/ddl-partition.html)
  
   `Transform (load) into Fact table`:  
 
@@ -298,14 +289,16 @@ we can use it for our particular application.
       from faa.faa_otp_load l; <== l like an alias for that load table
       insert into faa.otp_c select * from faa.otp_r; -- copy into _r without all of the formatting in _c table
   
-##### Data Loading Summary:   
-ELT allows load processes to make use of massive parallelissm (set-based operations can be done in parallel).  
-COPY loads using single process.    
-External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
-data sources with one SELECT statement of an external table. 
+  ##### Data Loading Summary:   
+  ELT (extract, load, transform) allows load processes to make use of massive parallelissm. Gpfdist reads the data in parallel. Once loaded, we can leverage the parallelism of the Greenplum database to tranform it (set-based operations can be done in parallel).   
+  COPY loads using single process, so it is less efficient.     
+  External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
+  data sources with one SELECT statement of an external table. 
 
 <a id ="tuning"></a>
 #### 5. Queries and Performance Tuning:  
+----  
+
 This section provides a useful introduction into Greenplum queries.  
 
 First, the master receives, parses and optimizes queries producing a resulting query that is either parallel or targeted.  
@@ -318,7 +311,7 @@ Most database operations - execute across all segments in parallel, performed on
 stored in the other segment databases...
 
 
-`Terminology`:  
+**`Terminology`**:  
   - query plan: set of operations GP db will perform to produce the answer to a query; executed bottom up
   - motion operation: moving tuples between the segments during query processing; 
     - describes when and how data should be transferred between nodes during query execution.  
@@ -326,7 +319,7 @@ stored in the other segment databases...
     - query plan is sliced wherever motion operation occurs  
     - slices are passed to segments  
 
-`Understanding Parallel Query Execution`:  
+**`Understanding Parallel Query Execution`**:  
   - query dispatcher (QD): on master, process responsible for creating and dispatching the query plan
     - also accumulates and presents the final result
   - query executor (QE): on segment, process responsible for completing its portion of work and communicating its intermediate results
