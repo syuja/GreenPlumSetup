@@ -298,19 +298,21 @@ we can use it for our particular application.
       from faa.faa_otp_load l; <== l like an alias for that load table
       insert into faa.otp_c select * from faa.otp_r; -- copy into _r without all of the formatting in _c table
   
-#### Data Loading Summary:   
+##### Data Loading Summary:   
 ELT allows load processes to make use of massive parallelissm (set-based operations can be done in parallel).  
 COPY loads using single process.    
 External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
 data sources with one SELECT statement of an external table. 
 
 <a id ="tuning"></a>
-5. Queries and Performance Tuning:  
+#### 5. Queries and Performance Tuning:  
 This section provides a useful introduction into Greenplum queries.  
 
 First, the master receives, parses and optimizes queries producing a resulting query that is either parallel or targeted.  
 The master then dispatches query plans to all segments. Each segment is responsible for executing local database operations on its
 own set of data.  
+  
+  <p align = "center"> ![query_distribution](https://github.com/syuja/GreenPlumSetup/blob/master/img/parallel_plan.png)</p>
   
 Most database operations - execute across all segments in parallel, performed on a segment database independent of the data
 stored in the other segment databases...
@@ -325,7 +327,6 @@ stored in the other segment databases...
     - slices are passed to segments  
 
 `Understanding Parallel Query Execution`:  
- Processes:  
   - query dispatcher (QD): on master, process responsible for creating and dispatching the query plan
     - also accumulates and presents the final result
   - query executor (QE): on segment, process responsible for completing its portion of work and communicating its intermediate results
@@ -333,9 +334,9 @@ stored in the other segment databases...
   - gangs: related processes working on the same slice but on different segments  
 
  
- At least one worker process is assigned to each slice of the query plan. Each works on assigned portion of query plan independently.
+At least one worker process is assigned to each slice of the query plan. Each works on assigned portion of query plan independently.
  As a portion of the work is completed, tuples of data flow up the query plan from one gang to the next. The inter-process communication between segments is referred to as the _interconnect component_ of the Greenplum database.  
 
 
 More info on [query plan] (http://gpdb.docs.pivotal.io/4330/admin_guide/parallel_proc.html)  
-Please see [Exercises] (https://github.com/syuja/GreenPlumSetup/blob/master/TUTORIAL.md) to complete some practice exercises.   
+Please see [Exercises] (https://github.com/syuja/GreenPlumSetup/blob/master/TUTORIAL.md) for practice.   
