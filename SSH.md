@@ -1,32 +1,43 @@
 
 ### Open Stack Instances
-havana.cloud.mcs.anl.gov
-ssh-keygen name it
-produces a 2 files: copy public one into security of open stack
---> private one will use to ssh into
+havana.cloud.mcs.anl.gov  
+ssh-keygen name it  
+produces a 2 files: copy public one into security of open stack  
+--> private one will use to ssh into  
 
-associate a floating ip address
-I already added the key
-ssh -i <name_of_key_local_file> centos@<ipaddress_associated_to_me>
+associate a floating ip address  
+I already added the key  
+ssh -i <name_of_key_local_file> centos@<ipaddress_associated_to_me>  
 
-Can now sudo su: <-- install things
-then Create Snapshot, from that I can create other instances with that snapshot
+Can now sudo su: <-- install things  
+then Create Snapshot, from that I can create other instances with that snapshot  
 
-http://gpdb.docs.pivotal.io/4380/install_guide/init_gpdb.html#topic1
----
-Do this for all segments... (using a clone, so should be done)
-http://gpdb.docs.pivotal.io/4380/prep_os-system-params.html#topic3
-kernel config, xfs, scheduler (grubby for centOs 7), disable transparent huge pages (grubby)
+http://gpdb.docs.pivotal.io/4380/install_guide/init_gpdb.html#topic1  
 
-
-**MISSING: changing xfs to their config crashes the system... AND HOSTS <== /etc/hosts**
+---  
+Do this for all segments... (using a clone, so should be done)  
+http://gpdb.docs.pivotal.io/4380/prep_os-system-params.html#topic3  
+kernel config, xfs, scheduler (grubby for centOs 7), disable transparent huge pages (grubby)  
 
 
-
+**MISSING: changing xfs to their config crashes the system... AND HOSTS <== /etc/hosts**  
 
 
 
 
+-----  
+sftp -i <private_key_name> centos@<ip_address>
+! - drop into local shell
+exit to return to sftp session
+put - transfer to the remote server
+put -r - recursive
+
+get remoteFile - download from remote host
+get -r - recursive (directory and contents)
+get -r remoteFile remote_Renamed - renames as it downloads
+
+df -h - check remote has enough space
+!; df -h - check local has enough space
 
 -----
 command:
