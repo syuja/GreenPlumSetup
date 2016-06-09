@@ -1,4 +1,34 @@
 
+### Open Stack Instances
+havana.cloud.mcs.anl.gov
+ssh-keygen name it
+produces a 2 files: copy public one into security of open stack
+--> private one will use to ssh into
+
+associate a floating ip address
+I already added the key
+ssh -i <name_of_key_local_file> centos@<ipaddress_associated_to_me>
+
+Can now sudo su: <-- install things
+then Create Snapshot, from that I can create other instances with that snapshot
+
+http://gpdb.docs.pivotal.io/4380/install_guide/init_gpdb.html#topic1
+---
+Do this for all segments... (using a clone, so should be done)
+http://gpdb.docs.pivotal.io/4380/prep_os-system-params.html#topic3
+kernel config, xfs, scheduler (grubby for centOs 7), disable transparent huge pages (grubby)
+
+
+**MISSING: changing xfs to their config crashes the system... AND HOSTS <== /etc/hosts**
+
+
+
+
+
+
+
+
+-----
 command:
 may have to remove .ssh/known_hosts
 
