@@ -72,13 +72,13 @@ put -r - recursive
 `get -r - recursive` (directory and contents)  
 `get -r remoteFile remote_Renamed` - renames as it downloads   
 
-df -h - check remote has enough space  
-!; df -h - check local has enough space  
+`df -h` - check remote has enough space  
+`!; df -h` - check local has enough space   
 
 <a id="vbox"></a>   
 ### Virtual Box:     
 
-ssh -p 2222 gpadmin@127.0.0.1  
+`ssh -p 2222 gpadmin@127.0.0.1`    
 
 virtual box settings:   
   1. adapter is NAT and the other one is Host-only adapter   
