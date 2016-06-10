@@ -63,10 +63,10 @@ This quick guide is intended as a review. SFTP is used in order to transfer bina
 Note: **curl** command can also be used to download the binaries.    
 
 `sftp -i <private_key_name> centos@<ip_address>`  
-! - drop into local shell  
-exit to return to sftp session  
-put - transfer to the remote server   
-put -r - recursive   
+`!` - drop into local shell  
+`exit` to return to sftp session  
+`put` - transfer to the remote server   
+`put -r` - recursive   
 
 `get remoteFile` - download from remote host   
 `get -r - recursive` (directory and contents)  
