@@ -4,8 +4,8 @@
   2. [Connect to VMs](#con)  
   3. [SFTP Guide](#sftp)
   4. [Virtual Box] (#vbox)
-  5. [Install Greenplum on Master] (../docs/Master_Install.md)  
-  6. [Install Greenplum on all Hosts] (../docs/Hosts_Install.md)  
+  5. [Install Greenplum on Master] (Master_Install.md)  
+  6. [Install Greenplum on all Hosts] (Hosts_Install.md)  
   
 <a id="open"></a>
 ### Open Stack Instances  
