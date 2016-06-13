@@ -2,7 +2,6 @@
 
 ### Master:  
 
-
 **Beware**: Beware of creating aliases in the host file. They may not always work. It's less confusing to simply use the machine  
 names.
 
@@ -112,6 +111,11 @@ Run :
       gpcheck -f hostfile_gpcheck # gpcheck will check OS parameters  
       #is likely to print errors   
 
+Error produced by `gpcheck`:  
+      <p align="center"> ![xfs-error](https://github.com/syuja/GreenPlumSetup/blob/master/img/xfs_error.png)  </p>  
+        
 
-#### Initialize <-- link to another file  
+Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.  
+      
+#### Initialize:    
 
