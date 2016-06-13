@@ -14,4 +14,8 @@ options for Greenplum should be:
 
 
 In our example, our `etc/fstab` file should look like this:  
-      
+      <p align = "center"> ![fstab_template](https://github.com/syuja/GreenPlumSetup/blob/master/img/fstab_template.png) </p>   
+        
+        
+  
+  
