@@ -36,4 +36,6 @@ Edit options before mounting again.  Change them to:
 
 Finally, mount again.  
 
+Great [reference](http://ask.xmodulo.com/create-mount-xfs-file-system-linux.html).
+
 [top] (#top)
