@@ -11,6 +11,8 @@
 If the ssh key is created in the /root/.ssh folder, ssh will automatically search there so the `-i` flag is not  
 necessary: `ssh -i <private_key> centos@<ip>`.   
 
+Ctrl-d: like typing `exit` to exit a shell.  
+
 Also, you can just specify the name of the machine you're connecting to if the machine is listed under `/etc/hosts`.  
 For example if the hosts file looks like this:  
 
