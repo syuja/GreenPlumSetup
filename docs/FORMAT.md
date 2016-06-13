@@ -11,14 +11,29 @@
 
 <a id ="mount"></a>
 #### Mount: 
+To unmount:   
+
+    umount /mnt   
+
+To mount:  
+
+    mount /dev/vdb  
 
 
 <a id ="format"></a>
 #### Format: 
- 
+ Must have `xfsprogs` installed. Then:  
+
+    sudo mkfs.xfs -f /dev/vdb   
+
+
  
 <a id ="fstab"></a>
 #### fstab: 
+Edit options before mounting again.  Change them to:  
 
+![mount_options](https://github.com/syuja/GreenPlumSetup/blob/master/img/fstab_template.png)   
+
+Finally, mount again.  
 
 [top] (#top)
