@@ -6,6 +6,7 @@
   2. [Installation] (#inst)  
     a. [Helpful Tips] (#help)  
   3. [Tutorial] (../README.md)  
+  4. [fstab]   (../fstab.md)
 
 <a id="inst"></a>
 ## Installation  
