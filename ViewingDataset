@@ -1,9 +1,0 @@
-### Command for Viewing the Dataset:
-
-cut -c1 <name_of_dataset>
-
-cut -c1  Crimes_-_2001_to_present.csv | sort -n | uniq -c
-
-cut -f1 -d, Crimes_-_2001_to_present.csv 
-
- head Crimes_-_2001_to_present.csv 
