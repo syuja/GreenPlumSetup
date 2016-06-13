@@ -6,7 +6,22 @@
   4. [Virtual Box] (#vbox)
   5. [Install Greenplum on Master] (Master_Install.md)  
   6. [Install Greenplum on all Hosts] (Hosts_Install.md)  
+
+### Quick Tips:  
+If the ssh key is created in the /root/.ssh folder, ssh will automatically search there so the `-i` flag is not  
+necessary: `ssh -i <private_key> centos@<ip>`.   
+
+Also, you can just specify the name of the machine you're connecting to if the machine is listed under `/etc/hosts`.  
+For example if the hosts file looks like this:  
+
+      10.1.8.7        gp_segment1 seg1  
+      10.1.8.6        gp_master master  
+      10.1.8.4        gp_segment2 seg2  
+      10.1.8.3        gp_segment3 seg3  
   
+You can simply `ssh` like this: 
+
+      ssh gp_segment1  
 <a id="open"></a>
 ### Open Stack Instances  
 Create a ssh-key on your **local** machine.  
