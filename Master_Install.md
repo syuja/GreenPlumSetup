@@ -115,7 +115,10 @@ Error produced by `gpcheck`:
       <p align="center"> ![xfs-error](https://github.com/syuja/GreenPlumSetup/blob/master/img/xfs_error.png)  </p>  
         
 
-Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.  
+Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.   
+
+**SKIPPING `gpcheck` VALIDATION KEEPS PRODUCING SAME ERROR EVEN AFTER CHANGING MOUNT OPTIONS AND REMOUNTING**  
+
       
 #### Initialize:    
 
