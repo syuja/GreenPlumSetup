@@ -5,6 +5,15 @@
 **Beware**: Beware of creating aliases in the host file. They may not always work. It's less confusing to simply use the machine  
 names.
 
+**Recommended**: Add `source /usr/local/greenplum-db/greenplum_path.sh` to `.bashrc` so that it sources everytime it starts. Then do it for `gpadmin` as well:  
+
+            su - gpadmin  
+            vi .bashrc  
+            #insert source /usr/local/greenplum-db/greenplum_path.sh  
+            
+
+The preceding steps are only recommended for the master.   
+
 Create a ssh-key. Paste the public part to all hosts unders `/root/.ssh/authorized_keys`. Then ssh from the master onto all 
 of the hosts using `ssh <segment_name_in_hosts_file>`.  
 
@@ -119,6 +128,37 @@ Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.
 
 **SKIPPING `gpcheck` VALIDATION KEEPS PRODUCING SAME ERROR EVEN AFTER CHANGING MOUNT OPTIONS AND REMOUNTING**  
 
-      
+**To Test the hardware (network, disk i/o, mem bandwidth) run gpcheckperf**   
+ 1. create `hostfile_gpcheck`containing:   
+
+
+      gp_master  
+      gp_segment1  
+      gp_segment2  
+      gp_segment3  
+         
+  
+
+ 2. `gpcheckperf -f hostfile_gpcheck -d /mnt/data -r dsN > gpcheckperf_results`  
+
+
+      -f : points to file containing all hosts   
+      -d : file to test transferring to and from   
+      -r : specifies performance stest to run   
+             dsN:     'd' is for disk, 's' for stream and 'N' is for parallel    
+
+  
+ 3. I recommend running with `nohup <command> <arguments> &` so that it doesn't hang.  
+ 4. check performance results in `gpcheckperf_results`. 
+  
+
 #### Initialize:    
+Greenplum password is "changeme" for now.  
+
+
+
+
+
+
+
 
