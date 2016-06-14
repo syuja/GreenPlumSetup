@@ -149,8 +149,9 @@ Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.
 
   
  3. I recommend running with `nohup <command> <arguments> &` so that it doesn't hang.  
- 4. check performance results in `gpcheckperf_results`. 
-  
+ 4. check performance results in `gpcheckperf_results`.    
+ **Initial performance results**:  
+  ![initial performance results](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpcheck_performance.png)
 
 #### Initialize:    
 Greenplum password is "changeme" for now.  
