@@ -142,7 +142,8 @@ Run:
 
         psql -d template1 -h gpMaster -p 5432 -U gpadmin  
 
-This will connect you to the database. You are now ready to start loading tables!!  
+Set the global variables in your `.bashrc`. [List](http://gpdb.docs.pivotal.io/4380/install_guide/env_var_ref.html)  
+This will connect you to the database. You are now ready to start loading tables!
 
 
 [Back to top](#top)
