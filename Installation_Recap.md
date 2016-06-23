@@ -87,7 +87,10 @@ Run `gpseginstall`, this will likely crash because it creates `gpadmin`. It has 
 the segments, so it will be unable to connect to the segments. Repeat the SSH key exchanges as above for `gpadmin`.  
 
 Also, `gpadmin` will not have access to `hostfile_exkeys`. Copy `hostfile_exkeys` into `/home/gpadmin/` and grant `gpadmin`  
-access to it.  
+access to it. Rerun `gpseginstall`.  
+
+If that doesn't work run `gpseginstall` with `-f /home/gpadmin/hostfile_exkeys`, instead of `-f hostfile_exkeys`.   
+You're running it with the copy in the `gpadmin` home directory instead of the `root` home directory.  
 
 <a id = 'cross'></a>
 ### Cross Segments:  
