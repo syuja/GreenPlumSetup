@@ -139,7 +139,13 @@ listing multiple data file and interfaces for it.
 
 <a id ='fin'></a>  
 ### Final Steps:   
-It will say `Greenplum Database instance successfully created.` upon successful initialization.  
+Add, `export MASTER_DATA_DIRECTORY=/mnt/data/master/gpseg-1` to the `.bashrc`.   
+`.bashrc` is located in `gpadmin`'s home directory.   
+Then, source `.bashrc`.   
+Also, make sure that **`greenplum_path.sh`** is also sourced.   
+It will say `Greenplum Database instance successfully created.` upon successful initialization.   
+
+![init_success](https://github.com/syuja/GreenPlumSetup/blob/master/img/init_success.png)
 
 Run:   
 
