@@ -153,6 +153,10 @@ Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.
  **Initial performance results**:  
   ![initial performance results](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpcheck_performance.png)
 
+Performance results with 4 segments, instead of 3. (Not using `xfs` options).  
+
+![second perf results](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpcheckperf_4segments.png)
+
 #### Initialize:    
 Greenplum password is "changeme" for now.  
 
