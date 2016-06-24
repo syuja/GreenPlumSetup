@@ -6,6 +6,7 @@ Listings:
 \dt - list tables, also shows schemas
 \dv - list views
 \l - lists all databases
+\dn - list schemas
 
 Accessing Database: 
 \c - connect to a new database
