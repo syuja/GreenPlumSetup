@@ -34,7 +34,7 @@ Now enter python interactively:
     >>> import psycopg2 as ps   
     >>> conn = ps.connect(database="crimes", user="gpadmin", host="gpMaster", port=5432)   
     >>> cur=conn.cursor()  
-    >>> cur.execute('SELECT * FROM f_crimes WHERE id=4640862)  
+    >>> cur.execute('SELECT * FROM f_crimes WHERE id=4640862')    
     >>> cur.fetchone() #returns the result of the query  
 
 After work is done, commit the changes and close the connections:   
