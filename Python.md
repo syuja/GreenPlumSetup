@@ -1,5 +1,9 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
-# Python `psycopg2` module  
+## Python `psycopg2` module  
+  
+  
+**Update:** I prefer `pygresql`. Please read [this](https://github.com/syuja/GreenPlumSetup/blob/master/PYGRESQL_PYTHON.md).  
+
 
 This tutorial shows how to use `psycopg2` Python module to connect to Greenplum db and query it.  
 An alternative is `pygresql`, it's written IN Python instead of C, so it runs a little bit slower.  
