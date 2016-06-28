@@ -20,3 +20,6 @@ To list all tables can simply run:
 
       su -c 'yum list pygresql' #lists available PyGresSQL installations  
       yum install PyGreSQL.x86_64
+
+
+For more info: http://www.pygresql.org/contents/tutorial.html
