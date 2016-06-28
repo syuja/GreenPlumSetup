@@ -23,8 +23,11 @@ Then we will demonstrate how to add external users.
 We will edit the PostgreSQL host-based authentication file, pg_hba.conf, to allow outside users  
 to access our databse.  
 
+
 <a id='roles'></a>
 ### Roles and Privileges:  
 
+
+Change the query optimizer after initializing the database for faster results.  
 
 [back to top](#top)
