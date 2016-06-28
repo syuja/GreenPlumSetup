@@ -10,7 +10,11 @@ some consistency.
 
 Downside of using `psycopg2` is that it's very difficult to run commands like `\dt` to list all tables or  
 `d <table_name>` to list the data types of the columns of a table.  
+  
+  
 
+
+#### Tutorial:  
 
 `SSH` into the Magellan instance:  
 
