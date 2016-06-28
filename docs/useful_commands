@@ -1,5 +1,9 @@
 
-PSQL: 
+PSQL (greenplum): 
+
+**Always gpstop before leaving/rebooting/shutting down, and gpstart to restart the database.** 
+**Do not hard reboot Magellan instance without first running GPSTART.**
+
 Listings: 
 \d - lists tables, views, sequences \d table_name shows description of table
 \du - list of roles (users and groups)
@@ -7,6 +11,8 @@ Listings:
 \dv - list views
 \l - lists all databases
 \dn - list schemas
+
+\d [object_name] - **will show data types for each column**
 
 Accessing Database: 
 \c - connect to a new database
@@ -25,5 +31,19 @@ Utility:
 FROM TERMINAL:
 psql -l - list all available databases
 psql -U username db - connects user to db
+
+example: `psql -d crimes -h gpMaster -p 5432 -U gpadmin` (-d database, -h host, -p port, -U user)
+
+ps -ef | grep gpfdist : helpful to see if gpfdist is running
+
+telnet ip port : better than pinging to check reachability
+
+netstat -tanpu ; display processes at each port
+
+Running `gpfdist`: gpfdist -d /home/centos -p 8081 -l ./log/ &;
+note `-d /home/centos` is what the the machine with the external table will connect to, (will be it's starting address)
+
+lsof -i:8081; helpful for listing the `PID` of the process running on the port; useful for terminating `gpdfidst`
+
 
 Please find here: http://gpdb.docs.pivotal.io/gs/43/pdf/PSQLQuickRef.pdf
