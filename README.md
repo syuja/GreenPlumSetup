@@ -1,5 +1,6 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
-# Table of Contents
+<a id='top'></a>
+#### Table of Contents:  
   1. [What is Greenplum Database (GP)?] (#gp)  
     a. [Basic Structure] (#struct)  
     b. [OLTP vs .OLAP] (#oltp)  
