@@ -46,7 +46,7 @@ These are important to allow faster transfer rate.
 
 
 ### Getting a Dataset with `curl`:    
-
+****************
 
 
 ### Installing Load Utilities:   
@@ -63,10 +63,7 @@ Unzip the loaders:
 
 Install the Loaders:  
 
-    /bin/bash greenplum-loaders-4.3.x.x-PLATFORM.bin  
-
-
- 
+    /bin/bash greenplum-loaders-4.3.x.x-PLATFORM.bin   
 
 Source it the Loader paths:   
 
@@ -79,15 +76,15 @@ For more information, click [here](http://gpdb.docs.pivotal.io/4380/client_tool_
 
 
 ### Running `gpfdist`:   
-
+**************
 
 
 ### Creating an External Table from Greenplum:  
-
+****************
 
 
 ### Loading the Data Internally:   
-
+************************
 
 
 
