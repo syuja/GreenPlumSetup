@@ -12,26 +12,32 @@ Ideal setup of our ETL server, the server with the dataset:
 Read this Open Stack reference.  
 Especially, read "creating a volume" and "attaching volume to an instance".  
 
-From the instance list the volumes available.
-lsblk 
-format it sudo mkfs.xfs -f /dev/vdc 
-mount it mount -o rw -o noatime -o inode64 -o allocsize=16m /dev/vdc /mnt2
+From the instance list the volumes available.  
+lsblk   
+format it sudo mkfs.xfs -f /dev/vdc   
+mount it mount -o rw -o noatime -o inode64 -o allocsize=16m /dev/vdc /mnt2   
 
 
-### Settings:  
+### Settings:    
 
-Disable SELINUX on the instance, `/etc/selinux/config`.  
+Disable SELINUX on the instance, `/etc/selinux/config`.    
 
-Change kernel settings
+Change kernel settings  
 
 
-### Getting a Dataset with `curl`:  
+### Getting a Dataset with `curl`:    
 
 
 
 ### Installing Load Utilities:   
+yum -y install unzip  
+https://network.pivotal.io/products/pivotal-gpdb#/releases/1683/file_groups/410  
+(http://gpdb.docs.pivotal.io/4380/client_tool_guides/load/unix/unix_load_install.html)  
 
-(http://gpdb.docs.pivotal.io/4380/client_tool_guides/load/unix/unix_load_install.html)
+source it!!
+source /usr/local/greenplum-loaders-4.3.8.1-build-1/greenplum_loaders_path.sh     
+
+don't have to enable remote client connections if within Magellan!
 
 
 ### Running `gpfdist`:   
@@ -42,7 +48,8 @@ Change kernel settings
 
 
 
-### Loading the Data Internally:  
+### Loading the Data Internally:   
+
 
 
 
