@@ -14,8 +14,8 @@ Especially, read "creating a volume" and "attaching volume to an instance".
 
 From the instance list the volumes available.
 lsblk 
-format it mkfs.xfs
-mount it
+format it sudo mkfs.xfs -f /dev/vdc 
+mount it mount -o rw -o noatime -o inode64 -o allocsize=16m /dev/vdc /mnt2
 
 
 ### Settings:  
@@ -31,11 +31,15 @@ Change kernel settings
 
 ### Installing Load Utilities:   
 
+(http://gpdb.docs.pivotal.io/4380/client_tool_guides/load/unix/unix_load_install.html)
+
 
 ### Running `gpfdist`:   
 
 
+
 ### Creating an External Table from Greenplum:  
+
 
 
 ### Loading the Data Internally:  
