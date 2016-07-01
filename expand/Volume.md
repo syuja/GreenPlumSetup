@@ -41,7 +41,7 @@ Disable SELINUX on the instance, `/etc/selinux/config`.
 Change kernel settings also.
 
 
-For more optimizations, read [here]().  
+For more optimizations, read [here](http://gpdb.docs.pivotal.io/4360/prep_os-system-params.html#topic3).  
 These are important to allow faster transfer rate.  
 
 
