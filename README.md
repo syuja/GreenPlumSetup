@@ -4,7 +4,7 @@
 ### Intro:   
 ---  
 This guide will help you:   
-  1. Understand of Greenplum    
+  1. Understand Greenplum    
   2. Install and Configure Greenplum   
   3. Interact with Greenplum (Reference Commands)   
   4. Use Python Libraries to Interface with Greenplum   
