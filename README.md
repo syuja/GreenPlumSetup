@@ -25,7 +25,7 @@ Short summary of the contents of each directory:
 |[inst](inst/):   |**installation** and initializing the database.   |
 |[docs](docs/): |reference material containing helpful commands and SSH information.| 
 |[python](python/):   |libraries for connecting and interacting with the database (**KBase**).|
-|[expand](expand/):  |adding more segments and calculating the storage capacity.|
+|[expand](expand/):  |adding more segments, volumes, and calculate storage capacity.|
 |[access](access/): |grant users access and privileges.|
 |[perf](perf/): | monitoring the system. |
  
