@@ -47,3 +47,7 @@ lsof -i:8081; helpful for listing the `PID` of the process running on the port; 
 
 
 Please find here: http://gpdb.docs.pivotal.io/gs/43/pdf/PSQLQuickRef.pdf
+
+
+df -h 
+lsblck <- lists even those drives mounted...
