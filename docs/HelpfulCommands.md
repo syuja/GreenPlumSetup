@@ -1,4 +1,5 @@
-![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
+![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
+<a id='top'></a>   
 ## Helpful Commands:   
 
 #### PSQL:  
@@ -67,5 +68,9 @@
 
 Environment variables do not point to the correct file locations, therefore database commands are   
 unable to run.  
-In `.bashrc`, create proper variables with locations. Before running commands, source the `.bashrc`.  
+In `.bashrc`, create proper variables with locations. Before running commands, source the `.bashrc`.   
+
+
+
+[Top](#top)  
 
