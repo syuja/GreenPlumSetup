@@ -11,7 +11,7 @@
     b. [Partitioning] (#part)  
     c. [Loading with gpfidst] (#gpf)  
   4. [Tutorial] (#tut)  
-  5. [Exercises] (docs/EXERCISES.md)
+  5. [Exercises] (EXERCISES.md)
 
 
 
@@ -151,5 +151,5 @@ set in the control file.
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)  
 
-See [Exercises](../docs/EXERCISES.md) to complete some exercises.  
+See [Exercises](EXERCISES.md) to complete some exercises.  
 [Top](#top)  
