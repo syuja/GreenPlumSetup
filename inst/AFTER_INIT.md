@@ -6,7 +6,7 @@
   1. [Accessing the Database](#access)    
   2. [Configure Clients](#clients)  
   3. [Roles and Privileges](#roles)
-  4. [Quick Recap](docs/RECAP.md)
+  4. [Quick Recap](Installation_Recap.md)
 
 If you did not specify a database to create after initialization in `gpinitsystem_config `, then you will have to create a new  
 one.
