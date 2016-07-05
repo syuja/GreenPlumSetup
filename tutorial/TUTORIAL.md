@@ -130,7 +130,7 @@ Syntax:
      
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
-
+<a id="ldData"></a>
 #### C. Load Data with Greenplum utilities:  
 i. gpdist: guarantees maximum parallelism while reading from or writing to external tables   
   1. run gpfdist on host (where data is located):   
