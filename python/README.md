@@ -4,7 +4,7 @@
 This module compares and contrasts two `Python` packages used for interfacing  
 with GreenPlum.   
 
-PygreSQL is by far my favorite.  
+I prefer `PygreSQL` over `pyscopg2`.   
 The interface is much simpler.  
 
 Short summary of the contents of each directory:  
