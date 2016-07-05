@@ -205,7 +205,7 @@ Ensure that the data is distributed evenly across segments.
 
 Finally, partition the tables, particularly if plan use queries that filter results using WHERE. Create partitions corresponding to the filters that will be used.    
 
-#### [ANALYTICS.md](./ANALYTICS.md)
+
 ---
 <sub><sup ="fn1"><a href="#ref1" title="jump back">1:For isolation, there is a tradeoff between concurrency and concurrency effect (dirty reads, lost updates). More isolation results in
 less concurrency and less concurrency effects.</sub></sup></a> 
