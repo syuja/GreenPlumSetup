@@ -1,14 +1,70 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
-### Helpful Commands:  
-Check if Postgres or Greenplum are running:  
+## Helpful Commands:   
 
-      ps -ef | grep postgres #or greenplum  
+#### PSQL:  
+**Always run `gpstop` before leaving/rebooting/shutting down, and `gpstart` to restart the database.**   
+**Note**: restarting the Master instance without running `gpstop` will crash the database.  
 
-Is the master available on port `5432`:   
+**Listing Tables, View Schemas:**  
+----  
 
-      netstat -tulpn | grep '5432'  
+            \d - lists tables, views, sequences \d table_name shows description of table  
+            \du - list of roles (users and groups)  
+            \dt - list tables, also shows schemas  
+            \dv - list views   
+            \l - lists all databases  
+            \dn - list schemas   
+            \d [object_name] - **will show data types for each column**   
 
-**Common problem**  
+
+**Accessing Database:**  
+
+            \c - connect to new database  
+            \q - quit database   
+
+**Help:**  
+  
+            \h - help on syntax for SQL command \h SELECT or \h *  
+            \? - list psql commands   
+      
+
+**Utility:**    
+
+            \timing [on | off] - timer will time all commands  
+            \cd - change working directory  
+            \i - runs SQL scripts from inside  
+            
+**From Terminal:**  
+  
+            psql -l - list all available databases  
+            psql -U username db - connects user name to db  
+                  example:  psql -d crimes -h gpMaster -p 5432 -U gpadmin (-d database ,-h host, -p port, -U user)  
+            
+
+**External Table:**  
+
+
+**gpfdist:**   
+
+            gpfdist -d /home/centos -p 8081 -l ./log/ &  #runs gpfdist    
+            #'/home/centos' will be what the external table accesses   
+            ps -ef | grep gpfdist  #for killing the process    
+            kill <pid from previous command>    
+
+**List processes on Ports:**  
+
+            lsof -i:8081 #lists process running on 8081, useful for checking if gpfdist is running on the port    
+            netstat -tulpn | grep '5432'  #also checks what process is running on port '5432'  
+            netstat -tanpu # list processes running on ports  
+
+**Drives Mounted:**  
+
+            df -h #shows size and mounted drives  
+            lsblck - lists drives that haven't been mounted, but that are connected  
+            
+
+**Common Problems:**   
+
 Environment variables do not point to the correct file locations, therefore database commands are   
 unable to run.  
 In `.bashrc`, create proper variables with locations. Before running commands, source the `.bashrc`.  
