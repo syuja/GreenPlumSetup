@@ -12,7 +12,7 @@
     `[gpadmin@gpdb-sandbox]$ ./start_all.sh`  
   2. review basic [commands] (../docs/HelpfulCommands.md)  
 
-**Note**: there are two types of commands psql and bash commands; psql commands will begin with `#`.    
+**Note**: there are two types of commands `psql` and `bash` commands; `psql` commands will begin with `#`.    
 
 <a id="tut"></a>
 ## [Tutorial] (TUTORIAL.md)
@@ -65,6 +65,7 @@ the database. We will also discuss some important considerations for performance
 `DROP SCHEMA IF EXISTS faa CASCADE;`   
   - cascade automatically drops objects (table, functions) that are contained in the schema   
 
+
 Each user has a search path; it determines which schemas are searched when referencing object (tables, views, etc).  
 
 `SET SEARCH_PATH TO faa, public, pg_catalog, gp_toolkit;`  
@@ -98,40 +99,44 @@ The definition of a table includes the distribution policy of the data, and the 
 ### 4. Data Loading: 3 Ways  
 **INSERT** is slowest, but simplest.     
 **COPY** allows the user to specify the format of external text file **but** it doesn't read/write in parallel.    
-**Greenplum utilities**, gpfdist and gpload, uses **external data tables** at **_HIGH DATA TRANSFER RATES_** (in parallel).    
+**Greenplum utilities**, `gpfdist` and `gpload`, use **external data tables** at **_HIGH DATA TRANSFER RATES_** (in parallel).    
   
 
 `gpload` is a wrapper for `gpfdist`. It calls `gpfdist` using the settings specified in a YAML-formatted control file. The control file allows you to configure `gpfdist` in a controlled, repeatable fashion.   
 
 
-#### A. Slowest But Simplest
-    INSERT INTO faa.d_cancellation_codes   
-    VALUES('A','Carrier'),('B','Weather'),('C','NAS')... ;    
- **see inside table**:  
+#### A. Slowest But Simplest   
+
+    INSERT INTO faa.d_cancellation_codes    
+    VALUES('A','Carrier'),('B','Weather'),('C','NAS')... ;     
+  
+ **see inside table**:   
 
       SELECT * FROM faa.d_cancellation_codes;  
     
 
 #### B. Copy Statement  
 
-    \COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS   
+    COPY faa.d_airlines FROM 'L_AIRLINE_ID.csv' CSV HEADER LOG ERRORS   
     INTO faa.faa_load_errors KEEP SEGMENT REJECT LIMIT 50 ROWS; 
     -- setting REJECT LIMIT allows Greenplum to scan in single row error isolation mode   
-    
+  
 
 Syntax:  
 
-    \COPY <table_name> FROM 'file_name' CSV --comma-separated mode  
+    COPY <table_name> FROM 'file_name' CSV --comma-separated mode  
     HEADER -- file contains a header row with colnames   
     LOG ERRORS INTO --specifies error table to log rows with errors  
     <error_table> KEEP -- do not drop error_table   
     REJECT LIMIT 50 ROWS; -- isolate errors into external table data while continuing to read correct rows   
     --if limit exceeded, then entire external table operation is aborted   
-     
+
+
 
 (http://gpdb.docs.pivotal.io/4320/ref_guide/sql_commands/COPY.html)  
-<a id="ldData"></a>
-#### C. Load Data with Greenplum utilities:  
+<a id="ldData"></a> 
+#### C. Load Data with Greenplum utilities:   
+
 i. gpdist: guarantees maximum parallelism while reading from or writing to external tables   
   1. run gpfdist on host (where data is located):   
     `gpfdist -d ~/gpdb-sandbox-tutorials/faa -p 8081 > /tmp/gpfdist.log 2>&1 & -- starts gpfdist process`  
@@ -172,9 +177,10 @@ i. gpdist: guarantees maximum parallelism while reading from or writing to exter
  **Distributing by randomly** slows joins across segments. Distribution of data may affect performance,
  depending on how user queries it.    
   
-  Note: faa is a schema, it's like namespace/container that will hold the table.  
+  Note: `faa` is a schema, it's like namespace/container that will hold the table.  
 
-  4. Create an External table:  
+  4. Create an External table:   
+  
   Creating an external table doesn't move the data into our Greenplum database. The external table definition simply provides 
   **references** to external files on the host. It also declares the communication protocol, `gpfdist`, and the port number to use.  
   
@@ -225,17 +231,14 @@ Show the results:
 
 #### gpload - wrapper around gpfdist  
 1. Kill gpfdist (gpload will start it)  
-  
-
 
     `ps -A |grep gpfdist`  
     `killall gpfdist`  
   
-2. Edit gpload.yaml  
+2. Edit `gpload.yaml`   
   - TRUNCATE: true ensures that the previous data is discarded  
   
-3. Execute gpload with gpload.yaml control file   
-
+3. Execute `gpload` with gpload.yaml control file    
 
       `gpload -f gpload.yaml -l gpload.log -v`   
       `# f <control_file> : yaml file containing the load specification details`    
@@ -292,10 +295,10 @@ Show the results:
   
     
 #### Data Loading Summary:   
-  ELT (extract, load, transform) allows load processes to make use of massive parallelissm. Gpfdist reads the data in parallel. Once loaded, we can leverage the parallelism of the Greenplum database to tranform it (set-based operations can be done in parallel).   
-  COPY loads using single process, so it is less efficient.     
+  ELT (extract, load, transform) allows load processes to make use of massive parallelissm. `Gpfdist` reads the data in parallel. Once loaded, we can leverage the parallelism of the Greenplum database to tranform it (set-based operations can be done in parallel).   
+  `COPY` loads using single process, so it is less efficient.     
   External tables provide a means of leveraging the parallel processing power of segments. They also allows us to access multiple
-  data sources with one SELECT statement of an external table. 
+  data sources with one `SELECT` statement of an external table. 
 
 <a id ="tuning"></a>
 #### 5. Queries and Performance Tuning:  
