@@ -1,7 +1,9 @@
 
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
 <a id='top'></a>
-#### Table of Contents:  
+### Intro:  
+This module compares and contrasts `pygresql` and `psycopg2`.   
+It also shows an example of using `pygresql`.  
 
 
 #### Why use `pygresql` over `psycopg2`?  
@@ -42,7 +44,7 @@ Be sure that the Greenplum database is running:
     su - gpadmin   
     gpstart  
 
-Log out of `gpadmin`. It allow running Python mostly for database analytics; it will be difficult to install the   
+Log out of `gpadmin`. It allows running Python mostly for database analytics; it will be difficult to install the   
 `pygresql` module there. The path will not be added properly.  
 
     #control d #logs out of gpadmin  and into root  
