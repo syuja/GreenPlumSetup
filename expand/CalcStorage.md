@@ -53,9 +53,10 @@ Allocate enough memory in order to account for formatting, running at 70% capaci
 Greenplum overhead.  
 
 To get an estimate of the space needed, start off with the size of the data set. Multiply it by 1.5.  
-Then, run this estimate through above calculations until you arrive at the a **total storage capacity** minus  
+Then, run this estimate through above calculations until you arrive at the  **total storage capacity** minus  
 the overheads. If the resulting size is very close to the size of the database, increase your required size  
-and perform the calculations again.   
+and perform the calculations again.    
+  
 Repeat until the estimated storage size is ~20-30% larger than the dataset.  
 
 If multiple queries to the database occur concurrently, then consider increasing the working area for the queries.  
@@ -88,6 +89,7 @@ Now, we determine the largest data set our Greenplum database can hold:
     largest_data_set = 370 GB / 1.4 = 264 GB  
 
 Keep in mind that the log files and database will grow thereby reducing the working space available for active queries.  
+This will result in slower queries.  
 
 
 <sub><sup> References: http://gpdb.docs.pivotal.io/4360/install_guide/capacity_planning.html </sub></sup>  
