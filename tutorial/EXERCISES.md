@@ -3,7 +3,7 @@
 ## Exercises  
 
 [Back to README.md](../README.md)  
-[Go to ANALYTICS.md](./ANALYTICS.md)
+
 
 ### Table of Contents
   1. [VACUUM and ANALYZE](#vac)
