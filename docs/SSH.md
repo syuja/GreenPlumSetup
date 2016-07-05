@@ -4,12 +4,13 @@
   2. [Connect to VMs](#con)  
   3. [SFTP Guide](#sftp)
   4. [Virtual Box] (#vbox)
-  5. [Install Greenplum on Master] (Master_Install.md)  
-  6. [Install Greenplum on all Hosts] (Hosts_Install.md)  
+  5. [Install Greenplum on Master] (../inst/Master_Install.md)  
+
 
 ### Quick Tips:  
-If the ssh key is created in the /root/.ssh folder, ssh will automatically search there so the `-i` flag is not  
-necessary: `ssh -i <private_key> centos@<ip>`.   
+Provide `ssh` with the location of the key by using the `-i` flag.   
+
+    `ssh -i <private_key> centos@<ip>`.   
 
 Ctrl-d: like typing `exit` to exit a shell.  
 
@@ -23,7 +24,9 @@ For example if the hosts file looks like this:
   
 You can simply `ssh` like this: 
 
-      ssh gp_segment1  
+      ssh -i ~/.ssh/id_rsa centos@gp_segment1  
+
+
 <a id="open"></a>
 ### Open Stack Instances  
 Create a ssh-key on your **local** machine.  
@@ -39,27 +42,30 @@ Go to havana.cloud.mcs.anl.gov .
     - paste the public key here  
 
 
-Once the instance is running, click `associate a floating ip address `  
+Once the instance is running, click `associate a floating ip address `.    
 
 <a id="con"></a>
 ### Connect to VMs  
 From local machine: 
-`ssh -i <name_of_key_local_file> centos@<ipaddress_associated_to_me>`  
+`ssh -i <location_of_private_local_key> centos@<ipaddress_associated_with_instance>`  
 
 
 
-Example with public key named magellan, CentOS instance, and assigned ip being '140.221.65.33':   
-`ssh -i magellan centos@140.221.65.33`   
+Example with public key named `magellan`, CentOS instance, and assigned ip being '140.221.65.33':   
+
+    `ssh -i magellan centos@140.221.65.33`   
 
 **Troubleshoot: ** It may be necessary to remove known_hosts in order to establish a connection. 
-`rm ~/.ssh/known_hosts`  
+
+    `rm ~/.ssh/known_hosts`   
+    #or hard reboot OpenStack/Magellan instance  
 
 Type yes for:   
 ![rsa](https://github.com/syuja/GreenPlumSetup/blob/master/img/rsa_key.png)   
 
 Type `sudo su` in order to install things.  
 
-On open stack, click `Create Snapshot`. This snapshot can be used to create other instances.  
+On open stack, click `Create Snapshot`. This snapshot can be used to create other instances.   
 
 http://gpdb.docs.pivotal.io/4380/install_guide/init_gpdb.html#topic1  
 
@@ -97,9 +103,12 @@ Note: **curl** command can also be used to download the binaries.
 
 `ssh -p 2222 gpadmin@127.0.0.1`    
 
-virtual box settings:   
-  1. adapter is NAT and the other one is Host-only adapter   
-  2. on NAT adapter set port forwarding: ssh tcp 127.0.0.1 2222 10.0.2.15 22   
-then restart the virtual machine.  
-  3. run ifconfig upon startup: check that eth0 is 10.0.2.15.22  
-  4. from host os: ssh -p gpadmin@127.0.0.1  
+virtual box general settings:   
+
+    1. Adaptors: 1 NAT and 2 Host-only adapter    
+    2. on NAT adaptor set port forwarding: ssh tcp 127.0.0.1 2222 10.0.2.15 22   then restart the virtual machine.   
+    3. run 'ifconfig' upon startup: check that eth0 is 10.0.2.15.22   
+    4. from host os: 'ssh -p gpadmin@127.0.0.1'  
+    5. use 'sftp' to transfer files to and from the VM  
+  
+
