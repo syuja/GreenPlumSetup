@@ -1,39 +1,59 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
-
+<a id='top'></a> 
 ### Master:  
 
-**Beware**: Beware of creating aliases in the host file. They may not always work. It's less confusing to simply use the machine  
-names.
+**Beware**: Aliases in the `/etc/hosts` file may not always work.  
 
-**Recommended**: Add `source /usr/local/greenplum-db/greenplum_path.sh` to `.bashrc` so that it sources everytime it starts. Then do it for `gpadmin` as well:  
+
+**Recommended**: Add `source /usr/local/greenplum-db/greenplum_path.sh` to `.bashrc` for `root` and `gpadmin`.   
 
             su - gpadmin  
             vi .bashrc  
             #insert source /usr/local/greenplum-db/greenplum_path.sh  
             
+Only do this for the Master; Segments do not execute commands directly.   
 
-The preceding steps are only recommended for the master.   
+Create a `SSH` key:   
 
-Create a ssh-key. Paste the public part to all hosts unders `/root/.ssh/authorized_keys`. Then ssh from the master onto all 
-of the hosts using `ssh <segment_name_in_hosts_file>`.  
+            ssh-keygen  
+
+
+Copy the public key to all hosts unders `/root/.ssh/authorized_keys` and `/home/gpadmin/.ssh/authorized_keys`.   
+Then `SSH` from the master onto all of the hosts using:  
+
+
+            ssh -i <key_location> <ip_of_segment>     
+
+Rerun `gpssh-exkeys`:   
+
+            gpssh-exkeys -f hostfile_exkeys   
+
+Validate that the keys were successfully exchanged:   
+
+            gpssh -f hostfile_exkeys -e ls -l $GPHOME   
+ 
+            
 
 #### Validate:  
-Greenplum provides several steps to validate the install.  
+Greenplum provides several steps to validate the install.   
 
-#### Packages:  
-Greenplum has many extensions that can be installed using `gppkg`.  
-These extensions include: **PL/Python**, PL/R, PL/Java, PL/Perl, PostGIS and MADlib.  
+More information can be found [here](http://gpdb.docs.pivotal.io/4380/install_guide/validate.html#topic1).  
 
-#### Python Package Installation:  
+  
 
-#### Python Package Usage:  <-- link to another doc
+#### Python Package Installation and Usage:   
 
+Go [here](../python/PYGRESQL_PYTHON.md), to see our documentation.    
 
+ 
 #### Create Database Storage Areas:  
-**This will be useful so that on Magellan we can use device `vdb` with 150 GB of space instead of `vda` with only 40 GB of space.  
-`df -h` shows partitions and drives available  
-`mount | grep 'vdb'` shows where device `vdb` is mounted  
-- it improves performance if `vdb` uses xfs file system and is [configure] (http://gpdb.docs.pivotal.io/4380/prep_os-system-params.html#topic3)   
+**This will be useful so that on Magellan/OpenStack we can use device `vdb` with 150 GB of space instead of `vda` with only 40 GB of space.      
+
+            df -h #shows partitions and drives available   
+            mount | grep 'vdb' #shows where device `vdb` is mounted     
+            # it improves performance if `vdb` uses xfs file system  
+            
+[Configuration](http://gpdb.docs.pivotal.io/4380/prep_os-system-params.html#topic3) for `vdb`.  
 
 now move on to creating storage area...  
 
@@ -46,12 +66,12 @@ now move on to creating storage area...
        
   
   
-To create data directory locations on segment hosts we will use `gpssh`. Log into master as root, and create a file containing all
- hosts `hostfile_gpssh_segonly`:  
-  
-      gp_segment1    
-      gp_segment2  
-      gp_segment3  
+To create data directory locations on segment hosts we will use `gpssh`.  
+Log into master as root, and create a file containing all hosts `hostfile_gpssh_segonly`:   
+
+            gp_segment1    
+            gp_segment2  
+            gp_segment3  
 
 Now use `gpssh` to create the files:   
 
@@ -69,21 +89,23 @@ Now use `gpssh` to create the files:
       -e : echoes the commands passed to each and echoes the output of each host  
 
 
-#### Synchronize the Time on All:  
-Synchronizing time is important so that we can correlate incidents from clocks and for the database to run correctly.  
-The basic idea is that segments will periodically synchronize their time with that of the master using NTP protocol.  
+#### Synchronize the Time on All:   
+Synchronizing time is important so that we can correlate incidents from clocks and for the database to run correctly.   
+The basic idea is that segments will periodically synchronize their time with that of the Master using NTP protocol.  
 
-If using CentOS 7 on Magellan, you will first have to install NTP (Network Time Protocol).   
-      yum install ntp # sudo su before this  
-       systemctl ntpd start #this starts the service
+If using CentOS 7 on Magellan/Openstack, you will first have to install NTP (Network Time Protocol).   
 
-Then find the NTP server:  
+      yum install ntp # sudo su before this    
+      systemctl ntpd start #this starts the service  
+
+Then find the NTP server:   
 
       ntpq -p # this shows the status    
-      # the active NTP server, current time source,  will have an asterisk *   
+      # the active NTP server, current time source, will have an asterisk *   
 
-Change the files on all of the hosts and the master. Make the master point to the network NTP servers, and make the hosts point 
-to the master. Then restart the service.  
+Change the files on all of the hosts and the master.   
+Make the master point to the network NTP servers, and make the hosts point 
+to the master. Then restart the service.   
 
 Master:   
 
@@ -120,13 +142,15 @@ Run :
       gpcheck -f hostfile_gpcheck # gpcheck will check OS parameters  
       #is likely to print errors   
 
-Error produced by `gpcheck`:  
+Error produced by `gpcheck`:   
       <p align="center"> ![xfs-error](https://github.com/syuja/GreenPlumSetup/blob/master/img/xfs_error.png)  </p>  
         
 
 Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.   
+**Note:** Instance will be unable to restart if `fstab` is changed. The drive is ephemeral, upon restart it needs to 
+be reformatted before remounting.  
 
-**SKIPPING `gpcheck` VALIDATION KEEPS PRODUCING SAME ERROR EVEN AFTER CHANGING MOUNT OPTIONS AND REMOUNTING**  
+
 
 **To Test the hardware (network, disk i/o, mem bandwidth) run gpcheckperf**   
  1. create `hostfile_gpcheck`containing:   
@@ -149,6 +173,7 @@ Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.
 
   
  3. I recommend running with `nohup <command> <arguments> &` so that it doesn't hang.  
+ 
  4. check performance results in `gpcheckperf_results`.    
  **Initial performance results**:  
   ![initial performance results](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpcheck_performance.png)
@@ -157,7 +182,10 @@ Go [here] (docs/FORMAT.md) to change the ephemeral driver's, `devb`, formatting.
   ![second perf results](https://github.com/syuja/GreenPlumSetup/blob/master/img/gpcheckperf_4segments.png)  
 
 #### Initialize:    
-Greenplum password is "changeme" for now.  
+Please view [Installation Recap](https://github.com/syuja/GreenPlumSetup/blob/master/inst/Installation_Recap.md).   
+
+
+[Top](#top) 
 
 
 
