@@ -14,7 +14,7 @@
 The [Exercises](EXERCISES.md) are optional.   
 
 
-
+<sup>1</sup> The tutorial can be found [here](http://greenplum.org/gpdb-sandbox-tutorials/).  
 
 
 
