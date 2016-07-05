@@ -13,6 +13,11 @@ one.
 
  <p align = 'center'>![optional_create](https://github.com/syuja/GreenPlumSetup/blob/master/img/optional_create_db.png)</p>  
  
+First log in to `template1` as `gpadmin`:  
+
+     psql -d template1 -h gpMaster -p 5432 -U gpadmin  
+  
+ 
 <a id ='access'></a>
 ### Accessing the Database:  
 We will first demonstrate how to use `psql` to access the local database.  
@@ -20,7 +25,7 @@ Then we will demonstrate how to add external users.
 
 <a id='clients'></a>  
 ### Configure Client Authentication:   
-We will edit the PostgreSQL host-based authentication file, pg_hba.conf, to allow outside users  
+We will edit the PostgreSQL host-based authentication file, `pg_hba.conf`, to allow outside users  
 to access our databse.  
 
 
