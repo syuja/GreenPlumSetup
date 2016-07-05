@@ -46,8 +46,16 @@ For more optimizations, read [here](http://gpdb.docs.pivotal.io/4360/prep_os-sys
 These are important to allow faster transfer rate.  
 
 
+
+
 ### Getting a Dataset with `curl`:    
 ****************
+
+
+
+
+
+
 
 
 ### Installing Load Utilities:   
@@ -79,20 +87,54 @@ For more information, click [here](http://gpdb.docs.pivotal.io/4380/client_tool_
 ### Running `gpfdist`:   
 After the load tools have been installed, we can start running our **ETL server** using `gpfdist`.  
 
+If `gpfdist` does not run correctly, you may have to add it to the $PATH variable.  
 
-### Creating an External Table from Greenplum:  
-****************
+To run `gpfdist` specify the directory containing the data set, the port to use, and the log file in which to log output.  
 
+        gpfdist -d /home/centos -p 8081 -l ./log/ &;  
+
+When creating an external table, the segment host will be directed to the directory specified by `gpfdist`.  
+
+To check if `gpfdist` is running:  
+
+        ps -ef | grep gpfdist  
+
+
+For more information, read [here](http://gpdb.docs.pivotal.io/4330/utility_guide/admin_utilities/gpfdist.html).   
+
+### Creating an External Table from Greenplum:   
+The external table does not move data into our Greenplum Database.  
+It simply provides a reference to the external data.  
+Creating external tables is important in order to allow **parallel insertion** into the Greenplum database  
+using `gpfdist`. Otherwise, insertion would occur sequentially.  
+
+Example of external table:  
+
+        CREATE EXTERNAL TABLE faa.ext_loat_otp #faa is the schema (namespace)   
+        (LIKE faa.faa_otp_load) #LIKE creates table with same columns and data types   
+        LOCATION ('gpfdist: //localhost8081/otp*.gz')    
+        FORMAT 'csv' (HEADER) #csv with header    
+        LOG ERRORS INTO err_log SEGMENT REJECT LIMIT 50000 rows; #aborts if too many errors    
+
+Use the same `port` number used for the ETL server.  If the `err_log` table hasn't been created, the database will  
+automatically generate it using the same columns used to create the table.  
+
+Then simply, run the command `INSERT INTO` to copy the external data into our Greenplum database.  
+`INSERT INTO` will copy in parallel, since we've set up the external table and ETL server using `gpfdist`.  
+
+For more information, read [Load Data with Greenplum utilities](https://github.com/syuja/GreenPlumSetup/blob/413fcf8fe683772908a72e831b93c66f37c551ba/tutorial/TUTORIAL.md#).  
 
 ### Loading the Data Internally:   
-************************
+Create a load table and simply `INSERT INTO` it.  
+Note that the load table will be exactly the same as the external table.   
 
-Now that the data has been loaded internally, we can transform it and start using it.  
-
-
-
+        INSERT INTO faa.faa_otp_load SELECT * FROM faa.ext_load_otp;  
 
 
+Transformation will occur after the data has been loaded.  
+This is done in order to quickly load the data, and then we exploit our local hardware to transform the data.  
+
+This is faster than transforming the data before we load it locally.  
 
 
 
