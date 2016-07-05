@@ -2,9 +2,10 @@
 <a id='top'></a>
 
 In order to load data into Greenplum, we will first create a volume on OpenStack.  
-We will attach it to an instance, then `curl` the data set into it.  
-Finally, we will use `gpfdist` to make it available to the Greenplum database through  
-an external database.  
+We will attach it to an instance. This instance along with its attached volume will  
+become our **ETL server**. 
+Then, we will `curl` an external data set into it.  
+Finally, we will use `gpfdist` to make it available from the ETL server to the Greenplum database.  
 
 
 ### Intro: 
@@ -16,7 +17,7 @@ The ideal setup of our ETL server would look something like this:
 
 ### Creating and Attaching a Volume:  
 Read this Open Stack [reference](http://docs.openstack.org/user-guide/common/cli_manage_volumes.html).  
-Especially, read "create a volume" and "Attach the volume to an instance".   
+Especially, read "Create a volume" and "Attach the volume to an instance".   
 
 Read [CalcStorage.md](CalcStorage.md) to get an estimate of the needed volume size.  
 
@@ -38,7 +39,7 @@ Mount the volume:
 We need to adjust some settings 
 Disable SELINUX on the instance, `/etc/selinux/config`.    
 
-Change kernel settings also.
+Change the kernel settings also.
 
 
 For more optimizations, read [here](http://gpdb.docs.pivotal.io/4360/prep_os-system-params.html#topic3).  
@@ -55,7 +56,7 @@ First, install `unzip` in the Centos7 instance that you are running:
     yum -y install unzip   
 
 Download the [Loaders](https://network.pivotal.io/products/pivotal-gpdb#/releases/1683/file_groups/410 ).  
-Then, `sftp` them to our instance with the volume attached.  
+Then, `sftp` them to our ETL server.  
 
 Unzip the loaders:  
 
@@ -76,7 +77,7 @@ For more information, click [here](http://gpdb.docs.pivotal.io/4380/client_tool_
 
 
 ### Running `gpfdist`:   
-**************
+After the load tools have been installed, we can start running our **ETL server** using `gpfdist`.  
 
 
 ### Creating an External Table from Greenplum:  
@@ -86,7 +87,7 @@ For more information, click [here](http://gpdb.docs.pivotal.io/4380/client_tool_
 ### Loading the Data Internally:   
 ************************
 
-
+Now that the data has been loaded internally, we can transform it and start using it.  
 
 
 
