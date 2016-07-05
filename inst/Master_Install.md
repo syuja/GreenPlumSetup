@@ -24,7 +24,7 @@ Then `SSH` from the master onto all of the hosts using:
 
             ssh -i <key_location> <ip_of_segment>     
 
-Rerun `gpssh-exkeys`:   
+Re-run `gpssh-exkeys`:   
 
             gpssh-exkeys -f hostfile_exkeys   
 
@@ -47,7 +47,7 @@ Go [here](../python/PYGRESQL_PYTHON.md), to see our documentation.
 
  
 #### Create Database Storage Areas:  
-**This will be useful so that on Magellan/OpenStack we can use device `vdb` with 150 GB of space instead of `vda` with only 40 GB of space.      
+This will be **useful** so that on Magellan/OpenStack we can use device **`vdb`** with 150 GB of space instead of `vda` with only 40 GB of space.      
 
             df -h #shows partitions and drives available   
             mount | grep 'vdb' #shows where device `vdb` is mounted     
