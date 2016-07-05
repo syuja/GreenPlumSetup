@@ -2,25 +2,34 @@
 <a id='top'></a>
 
 ### Estimating Storage Capacity:  
-This module will help you determine how much data your Greenplum database can hold, **total storage capacity**.    
+This module will help you determine how much data your Greenplum database can hold, **total storage capacity**.   
 
-We will first obtain **usable disk space** and use it to calculate the *total storage capacity**.  
+First, we calculate `formatted_disk_space` and use it to calculate **`usable disk space`**.   
 
-    total_storage_capacity = usable_disk_space x num_seg_hosts  
-    usable_disk_space = usable_disk_space - 1/3 (usable_disk_space) 
-    # 1/3 reserved as working area for active queries  
+        formatted_disk_space = (raw_cap * 0.9)  
+        #assuming 10% formatting overhead and RAID-10   
 
-Usable disk space is obtained by removing formatting overheads and by running at 70% capacity (optimal performance).  
+**Usable disk space** is the amount of space available to the user per segment host.   
+Next we calculate, the **usable disk space**:  
 
-    usable_disk_space = formatted_disk_space * .70  
-    # 70% capacity provides optimal performance  
-    formatted_disk_space = (raw_cap * 0.9)  
-    #assuming 10% formatting overhead and RAID-10  
+        usable_disk_space = formatted_disk_space * .70   
+        #running at 70% capacity provides optimal performance   
+
+Next, we save some space in memory for running queries.  
+
+        usable_disk_space = usable_disk_space - 1/3 (usable_disk_space) 
+        # 1/3 reserved as working area for active queries 
   
 
-The **total storage capacity** is greater than what is available to the user.  
-Next, we will subtract additional overheads from **total storage capacity** space to obtain user space.  
-**User space** is the amount of memory available for holding data (total storage capacity - overheads).  
+Finally, we can calculate the **total storage capacity** of our system:  
+
+        total_storage_capacity = usable_disk_space x num_seg_hosts 
+
+
+The **total storage capacity** is greater than what is available to the user.   
+There are additional storage overheads that we must subtract from **total storage capacity**.   
+
+**User space** is the amount of memory available for holding data (total storage capacity - overheads).   
 
 ### User Data Available:  
 Data will be larger when loaded into the Greenplum database.  
