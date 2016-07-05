@@ -10,7 +10,7 @@
 **Before starting**: 
   1. run the start script, otherwise you will not be able to connect to the database.  
     `[gpadmin@gpdb-sandbox]$ ./start_all.sh`  
-  2. review basic [commands] (../docs/useful_commands)  
+  2. review basic [commands] (../docs/HelpfulCommands.md)  
 
 **Note**: there are two types of commands psql and bash commands; psql commands will begin with `#`.    
 
@@ -334,4 +334,4 @@ At least one worker process is assigned to each slice of the query plan. Each wo
 
 
 More info on [query plan] (http://gpdb.docs.pivotal.io/4330/admin_guide/parallel_proc.html)  
-Please see [Exercises] (https://github.com/syuja/GreenPlumSetup/blob/master/TUTORIAL.md) for practice.   
+Please see [Exercises] (EXERCISES.md) for practice.   
