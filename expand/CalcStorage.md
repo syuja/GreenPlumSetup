@@ -32,25 +32,35 @@ There are additional storage overheads that we must subtract from **total storag
 **User space** is the amount of memory available for holding data (total storage capacity - overheads).   
 
 ### User Data Available:  
-Data will be larger when loaded into the Greenplum database.  
-Approximately, **1.4** times larger due to:  
-  A. Page Overhead
-  B. Row Overhead  
-  C. Attribute Overhead  
-  D. Indexes  
+The data will occupy more space once loaded onto the database.  
+It will occupy approximately **1.4** more than the size of the data set.  
+This is due to:  
+        A. Page Overhead  
+        B. Row Overhead  
+        C. Attribute Overhead  
+        D. Indexes  
 
 This will reduce the space available to the user.  
 
 Greenplum metadata and logs will consume further space:  
-  a. System Metadata (20 MB per segment)  
-  b. Write Ahead Log (approximately 1088 MB per segment or master)  
-  c. Log files (will grow over time)  
-  d. Data collection agents (system performance monitor requires minimum space)  
+         a. System Metadata (20 MB per segment)  
+         b. Write Ahead Log (approximately 1088 MB per segment or master)  
+          c. Log files (will grow over time)  
+          d. Data collection agents (system performance monitor requires minimum space)  
   
 ### Summary:  
-Allocate enough space for the database in order to provide queries enough working area.  
-Determine the total storage capacity and divide by 1.4 to determine the largest dataset your Greenplum database  
-can store.  
+Allocate enough memory in order to account for formatting, running at 70% capacity, query working area and 
+Greenplum overhead.  
+
+To get an estimate of the space needed, start off with the size of the data set. Multiply it by 1.5.  
+Then, run this estimate through above calculations until you arrive at the a **total storage capacity** minus  
+the overheads. If the resulting size is very close to the size of the database, increase your required size  
+and perform the calculations again.   
+Repeat until the estimated storage size is ~20-30% larger than the dataset.  
+
+If multiple queries to the database occur concurrently, then consider increasing the working area for the queries.  
+
+ 
 
 
 ### Example:  
@@ -77,7 +87,7 @@ Now, we determine the largest data set our Greenplum database can hold:
 
     largest_data_set = 370 GB / 1.4 = 264 GB  
 
-Keep in mind that the log files and database will grow thereby reduce the working space available for active queries.  
+Keep in mind that the log files and database will grow thereby reducing the working space available for active queries.  
 
 
 <sub><sup> References: http://gpdb.docs.pivotal.io/4360/install_guide/capacity_planning.html </sub></sup>  
