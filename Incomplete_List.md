@@ -1,12 +1,8 @@
 
 Expand :
-Volume.md <== currently finding data set
 
-fix all broken links...==> inst and tutorial
 
-docs merge useful commands file <==
-
-access 
-perf
+access: add README, and others.  
+perf <== upload excel, and also test ngram and protein  
 
 **Upload xls performance data**
