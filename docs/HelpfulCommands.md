@@ -4,7 +4,9 @@
 
 #### PSQL:  
 **Always run `gpstop` before leaving/rebooting/shutting down, and `gpstart` to restart the database.**   
-**Note**: restarting the Master instance without running `gpstop` will crash the database.  
+**Note**: restarting the Master instance without running `gpstop` will crash the database.   
+
+For sample scripts, go [here](../script/README.md). 
 
 **Listing Tables, View Schemas:**  
 ----  
