@@ -45,7 +45,7 @@ Also, take time to view the [configuration](https://github.com/syuja/GreenPlumSe
 You may wish to view [helpful commands](https://github.com/syuja/GreenPlumSetup/blob/master/docs/HelpfulCommands.md) as a reference, as you begin to use the Greenplum database and  
 start adding datasets to it.  
 
-Sample scripts for creating tables can be viewed [here](scripts/README.md).
+Sample scripts for creating tables can be viewed [here](script).
 
 
 
