@@ -44,7 +44,13 @@ For sample scripts, go [here](../script/README.md).
                   example:  psql -d crimes -h gpMaster -p 5432 -U gpadmin (-d database ,-h host, -p port, -U user)  
             
 
-**External Table:**  
+**External Table:**   
+Please view the sample [scripts](../script/README.md).   
+
+The most important part is to specify the `gpfdist` protocol:  
+
+            LOCATION ('gpfdist://10.1.8.4:8081/Crimes*.csv')    
+
 
 
 **gpfdist:**   
