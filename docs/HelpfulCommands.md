@@ -68,7 +68,8 @@ The most important part is to specify the `gpfdist` protocol:
 
 **Drives Mounted:**  
 
-            df -h #shows size and mounted drives  
+            df -h #shows size and mounted drives (accounts for inodes and other overheads)  
+            du -hs #shows size used by files  
             lsblck - lists drives that haven't been mounted, but that are connected  
             
 
