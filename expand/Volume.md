@@ -48,15 +48,32 @@ These are important to allow faster transfer rate.
 
 
 
-### Getting a Dataset with `curl`:    
-****************
+### Getting a Dataset with `rsync`:    
+`rsync` is a utility that copies files from a host via a remote `rsync` daemon.  
+It reduces the amount of data sent by sending only the differences between the source file and the received file.  
+
+We used the following command:   
+
+    rsync -avzuP publicdata.opensciencedatacloud.org::ark:/31807/osdc-6a9633ac/ /mnt3  
+    #actually, we used the follwing command  
+    nohup 'rsync -avzuP publicdata.opensciencedatacloud.org::ark:/31807/osdc-6a9633ac/ /mnt3' &    
+    
+We copied it into `mnt3` because that is where are 2 TB volume is located.  
+
+`nohup '<command>' &` prevents the `rsync` process from stopping if we disconnect our shell.  
+
+The flags `-avzuP` have the following meaning:   
+
+        '-a' - archive mode  
+        '-v' - verbose mode  
+        '-z' - compresses file during transfer  
+        '-P' - shows progress during transfer   
+        '-u' - skips files that are newer on the receiver   
+        
 
 
-
-
-
-
-
+`rsync` is better than `curl` for larger files (> 1 GB).  
+In our case, it happened that the data server provided an `rsync` daemon to download the dataset.   
 
 ### Installing Load Utilities:   
 First, install `unzip` in the Centos7 instance that you are running:  
