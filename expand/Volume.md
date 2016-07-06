@@ -122,7 +122,9 @@ automatically generate it using the same columns used to create the table.
 Then simply, run the command `INSERT INTO` to copy the external data into our Greenplum database.  
 `INSERT INTO` will copy in parallel, since we've set up the external table and ETL server using `gpfdist`.  
 
-For more information, read [Load Data with Greenplum utilities](https://github.com/syuja/GreenPlumSetup/blob/413fcf8fe683772908a72e831b93c66f37c551ba/tutorial/TUTORIAL.md#).  
+For more information, read [Load Data with Greenplum utilities](https://github.com/syuja/GreenPlumSetup/blob/413fcf8fe683772908a72e831b93c66f37c551ba/tutorial/TUTORIAL.md#).   
+
+For sample `psql` scripts view [here](../script/README.md).  
 
 ### Loading the Data Internally:   
 Create a load table and simply `INSERT INTO` it.  
