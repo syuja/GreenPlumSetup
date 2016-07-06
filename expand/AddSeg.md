@@ -1,6 +1,15 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
 <a id='top'></a>
 
+
+**Note:** Instead of expanding, we will start over with new instances for the  
+Google **N-Gram** dataset.  
+
+**Why?** "i2.2xlarge.sd" instances have **larger** ephemeral drives, ~360 GB.   
+For a 1 TB dataset, we need ~7 OpenStack/Magellan, "i2.2xlarge.sd" instances, but  
+we would need **~ 15** "i2.large.sd" instances (exceeding my current limits).   
+ 
+
 #### Intro:  
 As the database grows in size, it will become necessary to expand it periodically.   
 Fortunately, Greenplum provides administrators a utility, `gpexpand`, to assist with expansion.   
