@@ -28,6 +28,7 @@ Short summary of the contents of each directory:
 |[expand](expand/):  |adding more segments, volumes, and calculate storage capacity.|
 |[access](access/): |grant users access and privileges.|
 |[perf](perf/): | monitoring the system. |
+|[script](script/README.md): | contains sample scripts. |
  
 
 ### Recommendations:   
@@ -43,6 +44,8 @@ Also, take time to view the [configuration](https://github.com/syuja/GreenPlumSe
 
 You may wish to view [helpful commands](https://github.com/syuja/GreenPlumSetup/blob/master/docs/HelpfulCommands.md) as a reference, as you begin to use the Greenplum database and  
 start adding datasets to it.  
+
+Sample scripts for creating tables can be viewed [here](scripts/README.md).
 
 
 
