@@ -1,0 +1,21 @@
+INSERT INTO crimes_schema.f_crimes SELECT
+L.ID,
+L.Case_Num,
+L.Date,
+L.Block,
+L.IUCR,
+L.Primary_Type,
+L.Location_Desc,
+L.Arrest,
+L.Domestic,
+L.Beat,
+L.District,
+L.Ward,
+L.Community_Area,
+L.FBI_Code,
+L.X_Coord,
+L.Y_Coord,
+L.Updated_On,
+L.Latitude,
+L.Longitude
+FROM int_load_crimes AS L;

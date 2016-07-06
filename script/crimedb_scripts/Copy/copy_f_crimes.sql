@@ -1,0 +1,3 @@
+CREATE TABLE jf_crimes AS
+SELECT * FROM f_crimes
+DISTRIBUTED BY (ID);
