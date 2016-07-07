@@ -61,6 +61,16 @@ This happens because we created a directory for data on the Master, we specified
 It simply lists all segment hosts in our Greenplum database, and in our case Master is also a segment.  
 (Master is a segment for space considerations, it will probably affect system performance.)     
 
+
+#### Charater Set:  
+The default character set for the Greenplum database is set in the  
+**ENCODING** parameter in the `gpinitsystem_config` file.   
+
+By default, it will be UTF8 or Unicode.   
+This is important if the database were to hold string containing  
+characters from different languages.   
+
+
 #### Summary:   
 We show the most basic configurations of all files required to install Greenplum.   
 
@@ -68,7 +78,7 @@ We hope that they will be useful to you.
 
 ### Definitions:   
 ***
-**SELinux** :  
+##### **SELinux** :  
 ----------
 security-enhanced Linux; it's a kernel security module. It's predecessor, discretionary access control (DAC),  
 only used file permissions and access control lists to control access to files.  
@@ -82,7 +92,7 @@ Giving users only the access necessary to function.
 
 <sub><sup> https://wiki.centos.org/HowTos/SELinux </sub></sup>  
 
-**iptables**:   
+##### **iptables**:   
 ----------
 user-space application that allows sys admin to configure tables in the Linux kernel firewall (Netfilter)  
 and to configure the chains it stores.  
@@ -112,7 +122,7 @@ of the rules in a chain.
 <sub><sup> https://en.wikipedia.org/wiki/Iptables </sub></sup>
 <sub><sup> https://www.digitalocean.com/community/tutorials/how-the-iptables-firewall-works </sub></sup>  
 
-**firewalld**:   
+##### **firewalld**:   
 ------
 It's a front-end controller for `iptables`.  
 It has a graphical user interfaces.  
