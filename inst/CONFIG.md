@@ -66,8 +66,11 @@ We show the most basic configurations of all files required to install Greenplum
 
 We hope that they will be useful to you.   
 
-#### Definitions:   
-**SELinux** : security-enhanced Linux; it's a kernel security module. It's predecessor, discretionary access control (DAC),  
+### Definitions:   
+***
+**SELinux** :  
+----------
+security-enhanced Linux; it's a kernel security module. It's predecessor, discretionary access control (DAC),  
 only used file permissions and access control lists to control access to files.  
 
 Under DAC, users and programs could grant insecure file permissions to others.  
@@ -79,7 +82,9 @@ Giving users only the access necessary to function.
 
 <sub><sup> https://wiki.centos.org/HowTos/SELinux </sub></sup>  
 
-**iptables**: user-space application that allows sys admin to configure tables in the Linux kernel firewall (Netfilter)  
+**iptables**:   
+----------
+user-space application that allows sys admin to configure tables in the Linux kernel firewall (Netfilter)  
 and to configure the chains it stores.  
 
 It's really a front-end to the kernel-level firewall, Netfilter.  
@@ -107,7 +112,8 @@ of the rules in a chain.
 <sub><sup> https://en.wikipedia.org/wiki/Iptables </sub></sup>
 <sub><sup> https://www.digitalocean.com/community/tutorials/how-the-iptables-firewall-works </sub></sup>  
 
-**firewalld**:    
+**firewalld**:   
+------
 It's a front-end controller for `iptables`.  
 It has a graphical user interfaces.  
 It uses _zones_ and _services_ instead of chains and rules.  
