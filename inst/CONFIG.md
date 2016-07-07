@@ -123,6 +123,6 @@ Also, it manages rule sets dynamically, so there is no need to interrupt the con
 The former uses the latter to enforce network policies.  
 
 
-<sub><sup> https://www.digitalocean.com/community/tutorials/how-to-set-up-a-firewall-using-firewalld-on-centos-7 </sup></sub>
+<sub><sup> https://www.linode.com/docs/security/firewalls/introduction-to-firewalld-on-centos </sup></sub>
 
 [Top](#top) 
