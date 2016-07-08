@@ -23,7 +23,7 @@ Next, we save some space in memory for running queries.
 
 Finally, we can calculate the **total storage capacity** of our system:  
 
-        total_storage_capacity = usable_disk_space x num_seg_hosts 
+        total_storage_capacity = usable_disk_space * num_seg_hosts 
 
 
 The **total storage capacity** is greater than what is available to the user.   
@@ -72,7 +72,7 @@ Running `df -h` shows formatted disk space for one segment.
 Plug that into:  
 
     #usable_disk_space = formatted_disk_space * .70  
-    usable_disk_space = 158 GB * .70  ~ 111 GB  
+    usable_disk_space = 158 GB 8 .70  ~ 111 GB  
 
 Use the next formula:  
 
@@ -82,7 +82,7 @@ Use the next formula:
 Finally, multiply by the number of segments (5 in our case):  
 
     #total_storage_capacity = usable_disk_space x num_seg_hosts  
-    total_storage_capacity = 74 x 5 = 370 GB  
+    total_storage_capacity = 74 * 5 = 370 GB  
 
 Now, we determine the largest data set our Greenplum database can hold:  
 
@@ -91,6 +91,36 @@ Now, we determine the largest data set our Greenplum database can hold:
 Keep in mind that the log files and database will grow thereby reducing the working space available for active queries.  
 This will result in slower queries.  
 
+### Example 2:  
+This example demonstrates how we estimated the number of instances required to store   
+Google's n-gram dataset version 1.   
+
+We are using `i2.2xlarge.sd`, which contain a 360 GB unformatted ephemeral drive.   
+
+First we calculate `usable_disk_space`:   
+
+        360 * .9 * .7 = 226.8   
+        226.8 - (.3*226.8) = 158.76  
+        
+So our `usable disk space` is 158.76 GB per instance.   
+
+Next, we look at the Google N-gram dataset.    
+It's zipped size is 769 GB. Assume that unzipping increases the size by 20%:  
+
+        769 * 1.2  = 922.8 GB #unzipped estimate   
+        922.8 * 1.4 = 1292 GB #including GP overhead  
+        
+How many instances do we need for a total storage capacity of 1292 GB?   
+
+        1292/158.76 = 8.13 # need 8.13 instances   
+        
+We should use 9 instances, but will attempt to only use 8.   
+We will do this by installing our Greenplum on the Master's `/dev/vda` and holding some data  
+in the Master's `/dev/vdb`; this will be specified in the `gpinitsystem_config` file.   
+
+Also, we will process the dataset in batches, so we will only `unzip`   
+one language at a time while we load it. We will discard the expanded version after   
+loading onto Greenplum.  
 
 <sub><sup> References: http://gpdb.docs.pivotal.io/4360/install_guide/capacity_planning.html </sub></sup>  
 [Top](#top)   
