@@ -1,10 +1,11 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)
 <a id='top'></a>
-
+  
+  
 In order to load data into Greenplum, we will first create a volume on OpenStack.  
 We will attach it to an instance. This instance along with its attached volume will  
 become our **ETL server**. 
-Then, we will `curl` an external data set into it.  
+Then, we will `rsync` an external data set into it.  
 Finally, we will use `gpfdist` to make it available from the ETL server to the Greenplum database.  
 
 
