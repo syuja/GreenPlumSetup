@@ -121,8 +121,8 @@ one will hold the `Master's` log file and the other will hold database data.
 This will be specified in the `gpinitsystem_config` file.    
 
 Also, we will process the dataset in batches, so we will only `unzip`   
-one language at a time while we load it. We will discard the expanded version after   
-loading onto Greenplum.  
+one language at a time while we load it.  
+We will discard the expanded version after loading on to Greenplum.  
 
 <sub><sup> References: http://gpdb.docs.pivotal.io/4360/install_guide/capacity_planning.html </sub></sup>  
 [Top](#top)   
