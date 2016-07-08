@@ -110,13 +110,15 @@ It's zipped size is 769 GB. Assume that unzipping increases the size by 20%:
         769 * 1.2  = 922.8 GB #unzipped estimate   
         922.8 * 1.4 = 1292 GB #including GP overhead  
         
-How many instances do we need for a total storage capacity of 1292 GB?   
+How many segments do we need for a total storage capacity of 1292 GB?   
 
-        1292/158.76 = 8.13 # need 8.13 instances   
+        1292/158.76 = 8.13 # need 8.13 segments   
         
-We should use 9 instances, but will attempt to only use 8.   
-We will do this by installing our Greenplum on the Master's `/dev/vda` and holding some data  
-in the Master's `/dev/vdb`; this will be specified in the `gpinitsystem_config` file.   
+We should use 9 segments, but will attempt to only use 8.   
+We will use our `Master` as **both** `Master` and as a `Segment`.   
+This will be done by using both `/dev/vda` and `/dev/vdb`;    
+one will hold the `Master's` log file and the other will hold database data.   
+This will be specified in the `gpinitsystem_config` file.    
 
 Also, we will process the dataset in batches, so we will only `unzip`   
 one language at a time while we load it. We will discard the expanded version after   
