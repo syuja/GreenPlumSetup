@@ -79,6 +79,20 @@ Environment variables do not point to the correct file locations, therefore data
 unable to run.  
 In `.bashrc`, create proper variables with locations. Before running commands, source the `.bashrc`.   
 
+** Rsync and SFTP: **  
+
+            #sftp can move entire directory with the '-r' flag  
+            #first you need to have a directory with the same name on the remote machine  
+            sftp> mkdir bin  
+            sftp> put -r bin  
+            
+`rsync` uses a different protocol.  
+
+            #it can push and pull(get) like sftp  
+            #push from local to remote  
+            rsync -avzuP <local_dir> user@remote:<dest_dir>  
+            #pull  
+            rsync -avzuP user@remote:<remote_dir_to_pull>   <local_dir_to_place>   
 
 
 [Top](#top)  
