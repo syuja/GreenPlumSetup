@@ -92,7 +92,11 @@ In `.bashrc`, create proper variables with locations. Before running commands, s
             #push from local to remote  
             rsync -avzuP <local_dir> user@remote:<dest_dir>  
             #pull  
-            rsync -avzuP user@remote:<remote_dir_to_pull>   <local_dir_to_place>   
+            rsync -avzuP user@remote:<remote_dir_to_pull>   <local_dir_to_place>    
+            #example to get dataset  
+            nohup rsync -avzuP publicdata.opensciencedatacloud.org::ark:/31807/osdc-6a9633ac/ /mnt2 &  
+            #example to split into two  
+            nohup rsync -avzuP 10.1.8.8:/mnt2/ngram_2009h2 /mnt2/ &  
 
 
 [Top](#top)  
