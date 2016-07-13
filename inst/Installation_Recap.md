@@ -1,7 +1,7 @@
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
 ---
 <a id='top'></a>
-#### Table of Contents:  
+### Table of Contents:  
   1. [Before Starting](#bef)    
   2. [Requirements](#req)   
   3. [Installation](#inst)  
@@ -23,9 +23,11 @@ Please review it before installing Greenplum or if you run into problems.
     E. XFS mounting (changing fstab to `xfs` will crash upon rebooting, do chroot, leave `ext4`)   
     F. Install to `/dev/vdb` not smaller `dev/vda` (easy fix in config file)    
 
+**SSH:** Running `gpseginstall` may ask for segment passwords. In this case,  change `/etc/ssh/sshd` to `PermitRootLogin yes` to **PermitRootLogin without -password**.  
 
 <a id = 'bef'></a>
 ### Before Starting:   
+---  
 To save time, do most of the setup on 1 instance in Openstack/Magellan.   
 This instance will become the **Master**.  
 
@@ -37,6 +39,7 @@ This can greatly reduce the repetitive work done.
 
 <a id = 'req'></a>
 ### Requirements:  
+---  
 Install `ed`, `unzip` and `ntp` on the first instance, so that you don't have to individually install on each segment.  
 Modify OS parameters as per the documentation, **except** for the **`/etc/fstab`** file.  
 
@@ -65,7 +68,7 @@ Also, be sure to do it for all users:  root to root, and centos to centos.
 
 Please view [here](https://github.com/syuja/ssh_tut) for our review on `SSH`.  
 
-The installation will create a new user `gpadmin`. Then it will attempt to connect from `gpadmin` in Master to `gpadmin` in all   
+The installation will create a new user `gpadmin`. Then it will attempt to connect from `gpadmin` in Master to `gpadmin` in all    
 segments, but it will fail.   
 It has no SSH keys set up between it and the `gpadmin` of  the segments, so it will be unable to connect to the segments.   
 
@@ -76,7 +79,8 @@ Upon failing, manually connect, exchange `SSH` keys and connect, then **rerun** 
 
 
 <a id = 'inst'></a>
-### Installation:  
+### Installation:   
+---   
 Before running `gpseginstall` exchange keys from master to segments. Then, connect from the master to each segment to test.  
 On master:   
 
@@ -100,7 +104,9 @@ At this point, snapshot the Master, and use it to **create** the Segment instanc
 
 
 <a id = 'cross'></a>
-### Cross Segments:  
+### Cross Segments:   
+---   
+
 You may wish to use `gpssh` in order to create the non-existent `.ssh` directories in the `/home/gpadmin` directory.  
 
      gpssh -f hostfile_exkeys  -e 'mkdir -p /home/gpadmin/.ssh'  
@@ -114,7 +120,9 @@ And paste the `id_rsa.pub` key from the Master into each `authorized_keys` file.
 Attempt to connect from the master to the segments. Re-run `gpseginstall` as listed in the documentation.  
 
 <a id = 'sync'></a>
-### Sync Time:   
+### Sync Time:    
+---    
+
 After editing `/etc/ntp.conf`, be sure to restart the daemon.    
 
      systemctl restart ntpd  
@@ -125,6 +133,8 @@ View [here](CONFIGURATION.md) to view configuration.
 
 <a id = 'store'></a>  
 ### Data Stores:    
+---   
+
 Create the data stores in the `/mnt` file, since this is where the ephemeral drive will be located.  
 The ephemeral drive is larger than the primary drive.   
 
@@ -135,7 +145,9 @@ The ephemeral drive is larger than the primary drive.
 
 
 <a id = 'init'></a>  
-### Initialization:   
+### Initialization:    
+---    
+
 Skipp `gpcheck` because `/etc/fstab` was not set to their recommendations.  
 
 Before running the `gpinit` utility, make sure that the Master instance can `SSH` to itself.  
@@ -148,7 +160,9 @@ Note that there are several configurations possible for the database. For exampl
 listing multiple data file and interfaces for it.    
 
 <a id ='fin'></a>  
-### Final Steps:   
+### Final Steps:    
+---    
+
 Add, `export MASTER_DATA_DIRECTORY=/mnt/data/master/gpseg-1` to the `.bashrc`.   
 `.bashrc` is located in `gpadmin`'s home directory.    
 
