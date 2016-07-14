@@ -114,7 +114,7 @@ Master:
 
 Hosts:   
 
-      server 0.gp_amster prefer  
+      server 0.gp_master prefer  
       server 1.dns1.@#$@ iburst  
 
 
