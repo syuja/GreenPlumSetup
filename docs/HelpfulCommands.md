@@ -107,6 +107,10 @@ In `.bashrc`, create proper variables with locations. Before running commands, s
             gpssh #allows you to execute commands across all segments   
             gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /mnt/data/primary'    
             #-e flag echoes results back to caller   
+            
+            #Perhaps the most important utilities are:  
+            gpstart   
+            gpstop   
 
 [Top](#top)  
 
