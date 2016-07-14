@@ -98,6 +98,15 @@ In `.bashrc`, create proper variables with locations. Before running commands, s
             #example to split into two  
             nohup rsync -avzuP 10.1.8.8:/mnt2/ngram_2009h2 /mnt2/ &  
 
+**Greenplum Utilities**:  
+
+            gpscp # copies files over to segments   
+            #example, configure ntp.conf once then copy it over    
+            gpscp -f hostF2 /etc/ntp.conf =:/etc/   
+            
+            gpssh #allows you to execute commands across all segments   
+            gpssh -f hostfile_gpssh_segonly -e 'mkdir -p /mnt/data/primary'    
+            #-e flag echoes results back to caller   
 
 [Top](#top)  
 
