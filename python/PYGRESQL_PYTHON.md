@@ -1,6 +1,11 @@
 
 ![Greenplum](https://github.com/syuja/GreenPlumSetup/blob/master/img/greenplum-logo.png)  
-<a id='top'></a>
+
+  
+  
+**Installation**: For an installing PyGreSQL please view [this module](../inst/PyGreSQL_install.md).    
+
+<a id='top'></a>  
 ### Intro:  
 This module compares and contrasts `pygresql` and `psycopg2`.   
 It also shows an example of using `pygresql`.  
