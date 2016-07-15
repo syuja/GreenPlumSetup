@@ -14,6 +14,7 @@ Short summary of the contents of each module:
 |[Master_Install](Master_Install.md): | installation on Master| 
 |[After_Initializing](AFTER_INIT):   | accessing the database, setting up clients and roles  |
 |[Config](CONFIG.md):   | shows images of configuration files  |
+|[PyGreSQL_install](PyGreSQL_install.md)| installing PyGreSQL  |
 
 
 
