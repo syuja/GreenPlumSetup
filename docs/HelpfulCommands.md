@@ -113,11 +113,17 @@ In `.bashrc`, create proper variables with locations. Before running commands, s
             gpstop   
 
 **Ngram Dataset**:   
+`gpfdist` does not support zipped files, it only supports `.gz` or `.bz2`.   
+It will be important to unzip the files before you can query them in the external table.   
 
             #finds all *.zip, unzips them in their current dir, and deletes the compressed   
             find . -name "*.zip" | xargs -P 5 -I fileName sh -c 'unzip -o -d "$(dirname "fileName")/" "fileName" && rm "fileName"'  
             #gpfdist only support gzip and bzip, so the Ngram data set needs to be unzipped first   
             #simply unzipping makes the data double in size   
+
+Running `xargs` with the `-P` flag runs many unzipping processes in parallel.   
+You may wish to consider using `parallel` if `xargs` isn't working for you.   
+
 
 
 [Top](#top)  
